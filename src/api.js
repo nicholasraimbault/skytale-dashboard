@@ -12,6 +12,11 @@ async function request(path, options = {}) {
     ...options,
   });
 
+  if (res.status === 401 && !options.skipAuthRedirect) {
+    window.location.href = '/login';
+    throw new Error('Session expired');
+  }
+
   if (!res.ok) {
     const body = await res.text();
     let message;
@@ -49,8 +54,8 @@ export async function revokeKey(id) {
   });
 }
 
-export async function getAccount() {
-  return request('/accounts/me');
+export async function getAccount({ skipAuthRedirect = false } = {}) {
+  return request('/accounts/me', { skipAuthRedirect });
 }
 
 export async function createBillingPortal() {

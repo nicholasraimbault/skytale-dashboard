@@ -17,7 +17,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAccount()
+    getAccount({ skipAuthRedirect: true })
       .then(() => setAuthed(true))
       .catch(() => {})
       .finally(() => setLoading(false));

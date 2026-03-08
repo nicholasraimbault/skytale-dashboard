@@ -21,6 +21,7 @@ export default function Keys() {
   const [creating, setCreating] = useState(false);
   const [newKeySecret, setNewKeySecret] = useState(null);
   const [revokingId, setRevokingId] = useState(null);
+  const [copied, setCopied] = useState(false);
   const nameRef = useRef(null);
 
   async function fetchKeys() {
@@ -93,7 +94,19 @@ export default function Keys() {
           <p>
             Copy your new API key now. You will not be able to see it again.
           </p>
-          <code>{newKeySecret}</code>
+          <div className="new-key-row">
+            <code>{newKeySecret}</code>
+            <button
+              className="btn-copy"
+              onClick={() => {
+                navigator.clipboard.writeText(newKeySecret);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+            >
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
         </div>
       )}
 
