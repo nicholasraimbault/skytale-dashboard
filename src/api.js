@@ -1,11 +1,10 @@
 // Copyright 2026 Skytale. Licensed under the Business Source License 1.1.
 // See LICENSE for details.
 
-const BASE_URL = 'https://api.skytale.sh/v1';
+const BASE_URL = '/api/v1';
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {
-    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
