@@ -1,7 +1,7 @@
 // Copyright 2026 Skytale. Licensed under the Business Source License 1.1.
 // See LICENSE for details.
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getKeys, createKey, revokeKey } from '../api.js';
 import '../styles/pages.css';
 
@@ -21,6 +21,7 @@ export default function Keys() {
   const [creating, setCreating] = useState(false);
   const [newKeySecret, setNewKeySecret] = useState(null);
   const [revokingId, setRevokingId] = useState(null);
+  const nameRef = useRef(null);
 
   async function fetchKeys() {
     try {
@@ -39,7 +40,10 @@ export default function Keys() {
 
   async function handleCreate(e) {
     e.preventDefault();
-    if (!newKeyName.trim()) return;
+    if (!newKeyName.trim()) {
+      nameRef.current?.focus();
+      return;
+    }
 
     setCreating(true);
     setError(null);
@@ -95,6 +99,7 @@ export default function Keys() {
 
       <form className="create-key-form" onSubmit={handleCreate}>
         <input
+          ref={nameRef}
           type="text"
           className="input"
           placeholder="Key name (e.g. production)"
@@ -104,7 +109,7 @@ export default function Keys() {
         <button
           type="submit"
           className="btn-primary"
-          disabled={creating || !newKeyName.trim()}
+          disabled={creating}
         >
           {creating ? 'Creating...' : 'Create key'}
         </button>
