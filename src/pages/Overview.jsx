@@ -43,15 +43,13 @@ export default function Overview() {
   if (loading) return <div className="page"><p className="loading">Loading usage data...</p></div>;
   if (error) return <div className="page"><p className="error-msg">{error}</p></div>;
 
-  const plan = usage?.plan || 'free';
-  const messagesUsed = usage?.messages_used || 0;
-  const messagesLimit = usage?.messages_limit || 10000;
-  const channelsUsed = usage?.channels_used || 0;
-  const channelsLimit = usage?.channels_limit || 5;
+  const plan = usage?.plan_tier || 'free';
+  const messagesUsed = usage?.messages_relayed || 0;
+  const messagesLimit = usage?.limits?.messages_per_month || 100000;
+  const tokenExchanges = usage?.token_exchanges || 0;
   const chart = usage?.daily || [];
 
   const messagesPercent = Math.min((messagesUsed / messagesLimit) * 100, 100);
-  const channelsPercent = Math.min((channelsUsed / channelsLimit) * 100, 100);
 
   function barClass(pct) {
     if (pct >= 90) return 'quota-bar-fill critical';
@@ -77,9 +75,9 @@ export default function Overview() {
           <span className="stat-detail">of {formatNumber(messagesLimit)} limit</span>
         </div>
         <div className="card">
-          <span className="stat-label">Active channels</span>
-          <span className="stat-value">{channelsUsed}</span>
-          <span className="stat-detail">of {channelsLimit} limit</span>
+          <span className="stat-label">Token exchanges</span>
+          <span className="stat-value">{formatNumber(tokenExchanges)}</span>
+          <span className="stat-detail">this period</span>
         </div>
       </div>
 
@@ -132,15 +130,6 @@ export default function Overview() {
           <div className={barClass(messagesPercent)} style={{ width: `${messagesPercent}%` }} />
         </div>
 
-        <div className="quota-label" style={{ marginTop: '1.25rem' }}>
-          <span className="quota-label-text">Channels</span>
-          <span className="quota-label-value">
-            {channelsUsed} / {channelsLimit}
-          </span>
-        </div>
-        <div className="quota-bar-bg">
-          <div className={barClass(channelsPercent)} style={{ width: `${channelsPercent}%` }} />
-        </div>
       </div>
     </div>
   );
