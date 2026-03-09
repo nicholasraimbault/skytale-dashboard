@@ -13,8 +13,8 @@
   --accent-hover: #6BB3FF;
   --success: #7dd3a0;
   --error: #f87171;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 }
 
 *,
@@ -37,6 +37,10 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+}
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
