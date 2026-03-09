@@ -1,6 +1,76 @@
 /* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
 /* See LICENSE for details. */
 
+/* Canonical design tokens: docs-site/src/styles/landing.css */
+
+/* Self-hosted fonts */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/inter-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-500.woff2') format('woff2');
+}
+
+/* Metric overrides prevent CLS during font swap */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90.20%;
+  descent-override: 22.48%;
+  line-gap-override: 0.00%;
+  size-adjust: 107.40%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New');
+  ascent-override: 76.00%;
+  descent-override: 20.00%;
+  line-gap-override: 0.00%;
+  size-adjust: 110.00%;
+}
+
 :root {
   --bg: #0A0A0B;
   --bg-surface: #141416;
@@ -13,8 +83,8 @@
   --accent-hover: #6BB3FF;
   --success: #7dd3a0;
   --error: #f87171;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  --font-sans: 'Inter', 'Inter Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', 'SF Mono', 'Fira Code', monospace;
 }
 
 *,
@@ -27,8 +97,11 @@
 
 html {
   font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 body {
@@ -37,6 +110,8 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a, button {
@@ -58,19 +133,18 @@ button {
   font-size: 0.875rem;
   font-weight: 500;
   border: none;
-  outline: none;
   transition: all 0.15s ease;
 }
 
-button:focus-visible {
+:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
 input {
   font-family: var(--font-sans);
   font-size: 0.9375rem;
-  outline: none;
   transition: border-color 0.15s ease;
 }
 
