@@ -160,6 +160,18 @@ export default function Nav({ onLogout }) {
             Overview
           </NavLink>
           <NavLink
+            to="/channels"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Channels
+          </NavLink>
+          <NavLink
+            to="/agents"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Agents
+          </NavLink>
+          <NavLink
             to="/keys"
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
@@ -187,6 +199,20 @@ export default function Nav({ onLogout }) {
               onClick={closeMenu}
             >
               Overview
+            </NavLink>
+            <NavLink
+              to="/channels"
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              Channels
+            </NavLink>
+            <NavLink
+              to="/agents"
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              onClick={closeMenu}
+            >
+              Agents
             </NavLink>
             <NavLink
               to="/keys"

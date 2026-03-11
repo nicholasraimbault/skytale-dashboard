@@ -267,3 +267,49 @@
   color: var(--text-muted);
   line-height: 1.5;
 }
+
+/* ========== Agents ========== */
+
+.agent-register-form {
+  margin-bottom: 1.5rem;
+}
+
+.agent-form-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.agent-form-row .input {
+  flex: 1;
+}
+
+.agent-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.agent-status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.agent-status.active {
+  background: var(--success);
+}
+
+@media (max-width: 768px) {
+  .agent-form-row {
+    flex-direction: column;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+}

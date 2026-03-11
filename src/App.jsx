@@ -7,6 +7,8 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Login from './pages/Login.jsx';
 import Overview from './pages/Overview.jsx';
 import Keys from './pages/Keys.jsx';
+import Channels from './pages/Channels.jsx';
+import Agents from './pages/Agents.jsx';
 import Account from './pages/Account.jsx';
 import Welcome from './pages/Welcome.jsx';
 import { getAccount } from './api.js';
@@ -47,6 +49,16 @@ export default function App() {
         <Route path="/keys" element={
           <ProtectedRoute authed={authed}>
             <Keys />
+          </ProtectedRoute>
+        } />
+        <Route path="/channels" element={
+          <ProtectedRoute authed={authed}>
+            <Channels />
+          </ProtectedRoute>
+        } />
+        <Route path="/agents" element={
+          <ProtectedRoute authed={authed}>
+            <Agents />
           </ProtectedRoute>
         } />
         <Route path="/account" element={

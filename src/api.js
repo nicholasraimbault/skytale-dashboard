@@ -63,3 +63,31 @@ export async function createBillingPortal() {
     method: 'POST',
   });
 }
+
+export async function getChannels() {
+  return request('/channels');
+}
+
+export async function createInvite(channel, maxUses = 1, ttlSeconds = 3600) {
+  return request('/channels/invites', {
+    method: 'POST',
+    body: JSON.stringify({ channel, max_uses: maxUses, ttl_seconds: ttlSeconds }),
+  });
+}
+
+export async function getAgents() {
+  return request('/agents');
+}
+
+export async function registerAgent(data) {
+  return request('/agents', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteAgent(did) {
+  return request(`/agents/${encodeURIComponent(did)}`, {
+    method: 'DELETE',
+  });
+}
