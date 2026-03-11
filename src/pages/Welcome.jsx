@@ -12,22 +12,21 @@ function snippets(apiKey) {
     python: `pip install skytale-sdk
 
 from skytale_sdk import SkytaleChannelManager
+from skytale_sdk.context import SharedContext
 
-alice = SkytaleChannelManager(identity=b"alice", api_key="${key}")
-alice.create("myorg/research/results")
-token = alice.invite("myorg/research/results")
-
-# Share this token with the agent that should join
-print(token)`,
+mgr = SkytaleChannelManager(identity=b"my-agent", api_key="${key}")
+mgr.create("myorg/research/results")
+ctx = SharedContext(mgr, "myorg/research/results")
+ctx.set("status", {"phase": "ready"})`,
     typescript: `npm install @skytalesh/sdk
 
 import { SkytaleChannelManager } from "@skytalesh/sdk";
+import { SharedContext } from "@skytalesh/sdk/context";
 
-const alice = new SkytaleChannelManager({ identity: "alice", apiKey: "${key}" });
-await alice.create("myorg/research/results");
-const token = await alice.invite("myorg/research/results");
-
-console.log(token);`,
+const mgr = new SkytaleChannelManager({ identity: "my-agent", apiKey: "${key}" });
+await mgr.create("myorg/research/results");
+const ctx = new SharedContext(mgr, "myorg/research/results");
+ctx.set("status", { phase: "ready" });`,
   };
 }
 
@@ -112,7 +111,7 @@ export default function Welcome() {
           )}
           <h1>Welcome, {displayName}</h1>
           <p className="welcome-subtitle">
-            You're all set. Here's everything you need to start building encrypted channels for your AI agents.
+            You're all set. Here's everything you need to start building encrypted shared context for your AI agents.
           </p>
         </div>
 
