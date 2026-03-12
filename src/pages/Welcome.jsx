@@ -111,7 +111,7 @@ export default function Welcome() {
           )}
           <h1>Welcome, {displayName}</h1>
           <p className="welcome-subtitle">
-            You're all set. Here's everything you need to start building encrypted shared context for your AI agents.
+            You're all set. Here's everything you need to start building the trust layer for your AI agents.
           </p>
         </div>
 
