@@ -1,0 +1,212 @@
+/* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
+/* See LICENSE for details. */
+
+/* ========== Invite Form ========== */
+
+.team-invite-card {
+  margin-bottom: 1.5rem;
+}
+
+.team-invite-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.team-invite-form .input {
+  flex: 1;
+  max-width: 320px;
+}
+
+.team-role-select {
+  width: auto;
+  max-width: 160px;
+  flex: 0 0 auto;
+}
+
+.team-invite-success {
+  margin-top: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: rgba(125, 211, 160, 0.12);
+  color: var(--success);
+  border: 1px solid rgba(125, 211, 160, 0.25);
+}
+
+/* ========== Members List ========== */
+
+.team-members {
+  display: flex;
+  flex-direction: column;
+}
+
+.team-member-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+
+.team-member-row:last-child {
+  border-bottom: none;
+}
+
+.team-member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.team-member-email {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.team-you-label {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.team-member-date {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.team-member-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ========== Role Badges ========== */
+
+.team-role-badge {
+  text-transform: capitalize;
+}
+
+.team-role-admin {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.team-role-operator {
+  background: rgba(125, 211, 160, 0.15);
+  color: var(--success);
+}
+
+.team-role-viewer {
+  background: rgba(160, 160, 168, 0.15);
+  color: var(--text-muted);
+}
+
+/* ========== Member Actions ========== */
+
+.team-member-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.team-role-change-select {
+  width: auto;
+  max-width: 130px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* ========== Pending Invites ========== */
+
+.team-pending {
+  margin-top: 1.5rem;
+}
+
+/* ========== Role Descriptions ========== */
+
+.team-roles-card {
+  margin-top: 1.5rem;
+}
+
+.team-roles-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.team-roles-toggle:hover {
+  color: var(--text);
+}
+
+.team-roles-chevron {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.team-roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.team-role-desc-card {
+  padding: 1.25rem;
+}
+
+.team-role-desc-title {
+  margin-bottom: 0.75rem;
+}
+
+.team-role-desc-text {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ========== Responsive ========== */
+
+@media (max-width: 768px) {
+  .team-invite-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .team-invite-form .input {
+    max-width: 100%;
+  }
+
+  .team-role-select {
+    max-width: 100%;
+  }
+
+  .team-member-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .team-member-right {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .team-roles-grid {
+    grid-template-columns: 1fr;
+  }
+}

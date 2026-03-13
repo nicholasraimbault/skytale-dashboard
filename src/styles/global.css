@@ -58,7 +58,9 @@
   --accent-hover: #8588ff;
   --accent-text: #fff;
   --success: #7dd3a0;
+  --warning: #c084fc;
   --error: #f87171;
+  --text-bright: #F8F8FA;
   --font-sans: 'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', 'SF Mono', 'Fira Code', monospace;
 }
@@ -127,11 +129,15 @@ input {
 /* Button variants */
 
 .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--accent);
   color: #fff;
-  padding: 0.625rem 1.25rem;
-  border-radius: 8px;
+  padding: 0.6rem 1.6rem;
+  border-radius: 100px;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .btn-primary:hover {
@@ -144,23 +150,32 @@ input {
 }
 
 .btn-ghost {
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 11, 0.5);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
   color: var(--text);
-  padding: 0.625rem 1.25rem;
-  border-radius: 8px;
+  padding: 0.6rem 1.6rem;
+  border-radius: 100px;
   border: 1px solid var(--border);
+  font-size: 0.9rem;
 }
 
 .btn-ghost:hover {
   border-color: var(--text-dim);
-  background: var(--bg-elevated);
+  color: var(--text-bright);
 }
 
 .btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: var(--error);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  border-radius: 100px;
   border: 1px solid var(--error);
   font-size: 0.8125rem;
 }
@@ -176,7 +191,7 @@ input {
   padding: 0.75rem 1rem;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--text);
 }
 
@@ -195,33 +210,40 @@ input {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
+  transition: border-color 0.15s;
+}
+
+.card:hover {
+  border-color: var(--text-dim);
 }
 
 /* Badge */
 
 .badge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.9rem;
   border-radius: 100px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
 .badge-free {
   background: rgba(160, 160, 168, 0.15);
   color: var(--text-muted);
+  border: 1px solid rgba(160, 160, 168, 0.3);
 }
 
 .badge-pro {
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .badge-enterprise {
   background: rgba(125, 211, 160, 0.15);
   color: var(--success);
+  border: 1px solid rgba(125, 211, 160, 0.3);
 }
 
 /* Layout */
@@ -229,11 +251,12 @@ input {
 .page {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 6.5rem 1.5rem 3rem;
+  padding: 2.5rem 2rem 3rem;
+  margin-left: 240px;
 }
 
 .page-title {
-  font-size: 1.75rem;
+  font-size: clamp(1.4rem, 2.2vw + 0.5rem, 1.75rem);
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
@@ -258,6 +281,7 @@ input {
   }
 
   .page {
+    margin-left: 0;
     padding: 5.5rem 1rem 2rem;
   }
 }

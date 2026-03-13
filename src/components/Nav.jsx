@@ -3,6 +3,9 @@
 
 import { NavLink, useNavigate } from 'react-router';
 import { useState, useRef, useCallback, useEffect } from 'react';
+import StatusBar from './StatusBar.jsx';
+import NotificationCenter from './NotificationCenter.jsx';
+import Changelog from './Changelog.jsx';
 import '../styles/nav.css';
 
 function solveBezier(x1, y1, x2, y2, x) {
@@ -133,25 +136,21 @@ export default function Nav({ onLogout }) {
   }, []);
 
   return (
-    <nav ref={navRef} className={isOpen ? 'open' : ''}>
-      <div className="nav-glass" ref={glassRef}></div>
-      <div className="nav-inner">
-        <div className="nav-brand">
-          <strong>sky</strong>tale<strong><span>.</span></strong>
+    <>
+      {/* Desktop sidebar */}
+      <aside className="nav-sidebar">
+        <div className="nav-sidebar-header">
+          <div className="nav-sidebar-brand">
+            <strong>sky</strong>tale<strong><span>.</span></strong>
+          </div>
+          <div className="nav-sidebar-actions">
+            <Changelog />
+            <NotificationCenter />
+          </div>
         </div>
 
-        <button
-          className="nav-hamburger"
-          onClick={toggle}
-          aria-label="Toggle menu"
-          aria-expanded={isOpen}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-
-        <div className="nav-links nav-desktop">
+        <div className="nav-section">
+          <div className="nav-section-label">Trust</div>
           <NavLink
             to="/"
             end
@@ -159,6 +158,22 @@ export default function Nav({ onLogout }) {
           >
             Overview
           </NavLink>
+          <NavLink
+            to="/security"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Security
+          </NavLink>
+          <NavLink
+            to="/compliance"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Compliance
+          </NavLink>
+        </div>
+
+        <div className="nav-section">
+          <div className="nav-section-label">Manage</div>
           <NavLink
             to="/channels"
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
@@ -172,10 +187,54 @@ export default function Nav({ onLogout }) {
             Agents
           </NavLink>
           <NavLink
+            to="/federation"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Federation
+          </NavLink>
+        </div>
+
+        <div className="nav-section">
+          <div className="nav-section-label">Develop</div>
+          <NavLink
             to="/keys"
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
             API Keys
+          </NavLink>
+          <NavLink
+            to="/playground"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Playground
+          </NavLink>
+        </div>
+
+        <div className="nav-section">
+          <div className="nav-section-label">Account</div>
+          <NavLink
+            to="/activity"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Activity
+          </NavLink>
+          <NavLink
+            to="/settings"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Settings
+          </NavLink>
+          <NavLink
+            to="/team"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Team
+          </NavLink>
+          <NavLink
+            to="/pricing"
+            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          >
+            Pricing
           </NavLink>
           <NavLink
             to="/account"
@@ -183,57 +242,143 @@ export default function Nav({ onLogout }) {
           >
             Account
           </NavLink>
-          <button className="nav-logout" onClick={handleLogout}>
+          <button className="nav-sidebar-logout" onClick={handleLogout}>
             Log out
           </button>
         </div>
-      </div>
 
-      <div className="nav-dropdown" ref={dropdownRef} aria-hidden={!isOpen}>
-        <div className="nav-dropdown-content" ref={contentRef}>
-          <div className="nav-links nav-mobile">
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={closeMenu}
-            >
-              Overview
-            </NavLink>
-            <NavLink
-              to="/channels"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={closeMenu}
-            >
-              Channels
-            </NavLink>
-            <NavLink
-              to="/agents"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={closeMenu}
-            >
-              Agents
-            </NavLink>
-            <NavLink
-              to="/keys"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={closeMenu}
-            >
-              API Keys
-            </NavLink>
-            <NavLink
-              to="/account"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              onClick={closeMenu}
-            >
-              Account
-            </NavLink>
-            <button className="nav-logout" onClick={handleLogout}>
-              Log out
-            </button>
+        <StatusBar />
+      </aside>
+
+      {/* Mobile top nav (hamburger + dropdown — untouched animation system) */}
+      <nav ref={navRef} className={`nav-mobile-bar ${isOpen ? 'open' : ''}`}>
+        <div className="nav-glass" ref={glassRef}></div>
+        <div className="nav-inner">
+          <div className="nav-brand">
+            <strong>sky</strong>tale<strong><span>.</span></strong>
+          </div>
+
+          <button
+            className="nav-hamburger"
+            onClick={toggle}
+            aria-label="Toggle menu"
+            aria-expanded={isOpen}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+        <div className="nav-dropdown" ref={dropdownRef} aria-hidden={!isOpen}>
+          <div className="nav-dropdown-content" ref={contentRef}>
+            <div className="nav-links nav-mobile">
+              <div className="nav-mobile-section-label">Trust</div>
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Overview
+              </NavLink>
+              <NavLink
+                to="/security"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Security
+              </NavLink>
+              <NavLink
+                to="/compliance"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Compliance
+              </NavLink>
+
+              <div className="nav-mobile-section-label">Manage</div>
+              <NavLink
+                to="/channels"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Channels
+              </NavLink>
+              <NavLink
+                to="/agents"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Agents
+              </NavLink>
+              <NavLink
+                to="/federation"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Federation
+              </NavLink>
+
+              <div className="nav-mobile-section-label">Develop</div>
+              <NavLink
+                to="/keys"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                API Keys
+              </NavLink>
+              <NavLink
+                to="/playground"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Playground
+              </NavLink>
+
+              <div className="nav-mobile-section-label">Account</div>
+              <NavLink
+                to="/activity"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Activity
+              </NavLink>
+              <NavLink
+                to="/settings"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Settings
+              </NavLink>
+              <NavLink
+                to="/team"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Team
+              </NavLink>
+              <NavLink
+                to="/pricing"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Pricing
+              </NavLink>
+              <NavLink
+                to="/account"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                Account
+              </NavLink>
+              <button className="nav-logout" onClick={handleLogout}>
+                Log out
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }

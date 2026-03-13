@@ -93,7 +93,7 @@
 }
 
 .keys-header-left h1 {
-  font-size: 1.75rem;
+  font-size: clamp(1.4rem, 2.2vw + 0.5rem, 1.75rem);
   font-weight: 700;
   margin-bottom: 0.25rem;
 }
@@ -191,7 +191,7 @@
   font-weight: 600;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 100px;
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s;
@@ -312,4 +312,335 @@
   .card {
     padding: 1.25rem;
   }
+}
+
+/* ========== Security (shared) ========== */
+
+.badge-revoked {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--error);
+}
+
+.badge-active {
+  background: rgba(125, 211, 160, 0.15);
+  color: var(--success);
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.section-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem;
+}
+
+/* ========== Trust Health ========== */
+
+.trust-health-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.trust-score {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.trust-score-label {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.trust-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.trust-card {
+  text-align: center;
+}
+
+.trust-card-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.trust-card-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.trust-card-link {
+  display: inline-block;
+  font-size: 0.6875rem;
+  margin-top: 0.375rem;
+}
+
+.score-green { color: var(--success); }
+.score-amber { color: #f59e0b; }
+.score-red { color: var(--error); }
+
+/* ========== Getting Started ========== */
+
+.getting-started {
+  margin-bottom: 2rem;
+}
+
+.getting-started-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.getting-started-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0;
+  font-size: 0.9375rem;
+}
+
+.checklist-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
+.checklist-check.done {
+  background: var(--success);
+  border-color: var(--success);
+  color: #000;
+}
+
+/* ========== Quickstart Widget ========== */
+
+.quickstart-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.quickstart-tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.quickstart-tab:hover { color: var(--text); }
+.quickstart-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+.quickstart-code {
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* ========== Trust Actions ========== */
+
+.trust-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.trust-action-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--accent);
+}
+
+.trust-action-card.warn { border-left-color: #f59e0b; }
+.trust-action-card.critical { border-left-color: var(--error); }
+
+.trust-action-text {
+  flex: 1;
+  font-size: 0.875rem;
+}
+
+.trust-action-dismiss {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+/* ========== Burn Rate ========== */
+
+.burn-rate {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+}
+
+.upgrade-banner {
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+.upgrade-banner.warn {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.upgrade-banner.critical {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+/* ========== Channel Health ========== */
+
+.channel-health-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.channel-health-card {
+  padding: 0.875rem 1rem;
+}
+
+.channel-health-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.channel-health-activity {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+.health-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.health-dot.green { background: var(--success); }
+.health-dot.amber { background: #f59e0b; }
+.health-dot.red { background: var(--error); }
+
+/* ========== Key Age ========== */
+
+.key-age-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 100px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.key-rotation-warning {
+  font-size: 0.75rem;
+  color: #f59e0b;
+  margin-top: 0.25rem;
+}
+
+/* ========== Visibility Badge ========== */
+
+.visibility-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 100px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.visibility-public {
+  background: rgba(160, 160, 168, 0.12);
+  color: var(--text-dim);
+}
+
+.visibility-organization {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.visibility-private {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--error);
+}
+
+/* ========== Search/Filter ========== */
+
+.filter-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-bar .input {
+  flex: 1;
+  max-width: 280px;
+}
+
+/* ========== Responsive ========== */
+
+@media (max-width: 768px) {
+  .trust-breakdown { grid-template-columns: repeat(2, 1fr); }
+  .channel-health-grid { grid-template-columns: 1fr; }
+  .filter-bar { flex-direction: column; }
+  .filter-bar .input { max-width: 100%; }
 }

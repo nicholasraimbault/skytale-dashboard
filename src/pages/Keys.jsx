@@ -13,6 +13,22 @@ function formatDate(iso) {
   });
 }
 
+function daysSince(iso) {
+  if (!iso) return 0;
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+}
+
+function keyAgeBadge(createdAt) {
+  const days = daysSince(createdAt);
+  if (days > 90) {
+    return { className: 'key-age-badge badge-warning', label: `${days} days old` };
+  }
+  if (days < 30) {
+    return { className: 'key-age-badge badge-active', label: `${days}d` };
+  }
+  return null;
+}
+
 export default function Keys() {
   const [keys, setKeys] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,24 +154,43 @@ export default function Keys() {
             </p>
           </div>
         ) : (
-          keys.map((key) => (
-            <div key={key.id} className="card key-item">
-              <div className="key-info">
-                <span className="key-name">{key.name}</span>
-                <span className="key-prefix">{key.prefix}...</span>
-                {key.created_at && (
-                  <span className="key-created">Created {formatDate(key.created_at)}</span>
+          keys.map((key) => {
+            const ageBadge = keyAgeBadge(key.created_at);
+            const days = daysSince(key.created_at);
+            return (
+              <div key={key.id} className="card key-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                  <div className="key-info">
+                    <span className="key-name">
+                      {key.name}
+                      {ageBadge && (
+                        <span className={ageBadge.className}>{ageBadge.label}</span>
+                      )}
+                    </span>
+                    <span className="key-prefix">{key.prefix}...</span>
+                    <span className="key-created">
+                      Created {formatDate(key.created_at)}
+                      {key.last_used_at
+                        ? ` · Last used ${formatDate(key.last_used_at)}`
+                        : ' · Never used'}
+                    </span>
+                  </div>
+                  <button
+                    className="btn-danger"
+                    onClick={() => handleRevoke(key.id)}
+                    disabled={revokingId === key.id}
+                  >
+                    {revokingId === key.id ? 'Revoking...' : 'Revoke'}
+                  </button>
+                </div>
+                {days > 90 && (
+                  <p className="key-rotation-warning">
+                    This key was created {days} days ago. Consider rotating it for better security.
+                  </p>
                 )}
               </div>
-              <button
-                className="btn-danger"
-                onClick={() => handleRevoke(key.id)}
-                disabled={revokingId === key.id}
-              >
-                {revokingId === key.id ? 'Revoking...' : 'Revoke'}
-              </button>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

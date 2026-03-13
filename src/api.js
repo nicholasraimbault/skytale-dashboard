@@ -91,3 +91,160 @@ export async function deleteAgent(did) {
     method: 'DELETE',
   });
 }
+
+// --- Revocations ---
+
+export async function createRevocation(data) {
+  return request('/revocations', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getRevocations() {
+  return request('/revocations');
+}
+
+export async function checkRevocation(did) {
+  return request(`/revocations/${encodeURIComponent(did)}`);
+}
+
+// --- Webhooks ---
+
+export async function createWebhook(data) {
+  return request('/webhooks', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getWebhooks() {
+  return request('/webhooks');
+}
+
+export async function deleteWebhook(id) {
+  return request(`/webhooks/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// --- Audit ---
+
+export async function getAuditEntries(channel, { limit = 50, offset = 0, epoch } = {}) {
+  const params = new URLSearchParams({ limit, offset });
+  if (epoch != null) params.set('epoch', epoch);
+  return request(`/audit/${encodeURIComponent(channel)}/entries?${params}`);
+}
+
+// --- Federation ---
+
+export async function createFederationInvite(data) {
+  return request('/federation/invite', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getFederationDirectory({ capability, org, limit = 50, offset = 0 } = {}) {
+  const params = new URLSearchParams({ limit, offset });
+  if (capability) params.set('capability', capability);
+  if (org) params.set('org', org);
+  return request(`/federation/directory?${params}`);
+}
+
+export async function verifyOrg(data) {
+  return request('/federation/verify-org', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// --- Agents (additional) ---
+
+export async function updateAgent(did, data) {
+  return request(`/agents/${encodeURIComponent(did)}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function searchAgents({ capability, did, limit = 50, offset = 0 } = {}) {
+  const params = new URLSearchParams({ limit, offset });
+  if (capability) params.set('capability', capability);
+  if (did) params.set('did', did);
+  return request(`/agents?${params}`);
+}
+
+// --- Channels (additional) ---
+
+export async function getPendingJoins(channel) {
+  return request(`/channels/pending?channel=${encodeURIComponent(channel)}`);
+}
+
+export async function getChannel(id) {
+  return request(`/channels/${id}`);
+}
+
+// --- Billing (additional) ---
+
+export async function createCheckout(tier = 'pro') {
+  return request('/billing/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ tier }),
+  });
+}
+
+export async function getBilling() {
+  return request('/billing');
+}
+
+// --- Settings ---
+
+export async function getSettings() {
+  return request('/accounts/settings');
+}
+
+export async function updateSettings(settings) {
+  return request('/accounts/settings', {
+    method: 'PUT',
+    body: JSON.stringify({ settings }),
+  });
+}
+
+// --- Activity ---
+
+export async function getActivityLog({ limit = 50, offset = 0, filter } = {}) {
+  const params = new URLSearchParams({ limit, offset });
+  if (filter) params.set('filter', filter);
+  return request(`/activity?${params}`);
+}
+
+// --- Teams ---
+
+export async function getTeamMembers(orgId) {
+  return request(`/teams/${orgId}/members`);
+}
+
+export async function inviteTeamMember(orgId, data) {
+  return request(`/teams/${orgId}/invites`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateMemberRole(orgId, accountId, data) {
+  return request(`/teams/${orgId}/members/${accountId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function removeMember(orgId, accountId) {
+  return request(`/teams/${orgId}/members/${accountId}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function getTeamInvites(orgId) {
+  return request(`/teams/${orgId}/invites`);
+}

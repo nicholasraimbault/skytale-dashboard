@@ -1,0 +1,184 @@
+/* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
+/* See LICENSE for details. */
+
+/* Sections */
+
+.settings-section {
+  margin-bottom: 1.5rem;
+}
+
+.settings-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.settings-section-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* Fields */
+
+.settings-field {
+  margin-bottom: 1rem;
+}
+
+.settings-field:last-child {
+  margin-bottom: 0;
+}
+
+.settings-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-bottom: 0.375rem;
+}
+
+.settings-readonly {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  padding: 0.75rem 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* Checkboxes */
+
+.settings-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.settings-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Save row */
+
+.settings-save-row {
+  margin-bottom: 1.5rem;
+}
+
+/* Export buttons */
+
+.settings-export-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Danger zone */
+
+.settings-danger-zone {
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.settings-danger-zone:hover {
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.settings-danger-title {
+  color: var(--error);
+}
+
+.settings-danger-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.settings-danger-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.settings-danger-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.settings-danger-item strong {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.settings-danger-desc {
+  font-size: 0.8125rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+/* Toast */
+
+.settings-toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 1000;
+  animation: toast-in 0.2s ease;
+}
+
+.settings-toast-success {
+  background: rgba(125, 211, 160, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(125, 211, 160, 0.3);
+}
+
+.settings-toast-error {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--error);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.settings-toast-info {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .settings-danger-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .settings-export-buttons {
+    flex-direction: column;
+  }
+}
