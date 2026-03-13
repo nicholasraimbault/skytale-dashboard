@@ -3,15 +3,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { getKeys, createKey, revokeKey } from '../api.js';
+import { formatDate } from '../utils.js';
 import '../styles/pages.css';
-
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 function daysSince(iso) {
   if (!iso) return 0;
@@ -94,7 +87,12 @@ export default function Keys() {
     }
   }
 
-  if (loading) return <div className="page"><p className="loading">Loading API keys...</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading API keys...</p>
+      </div>
+    );
 
   return (
     <div className="page">
@@ -107,9 +105,7 @@ export default function Keys() {
 
       {newKeySecret && (
         <div className="new-key-banner">
-          <p>
-            Copy your new API key now. You will not be able to see it again.
-          </p>
+          <p>Copy your new API key now. You will not be able to see it again.</p>
           <div className="new-key-row">
             <code>{newKeySecret}</code>
             <button
@@ -135,11 +131,7 @@ export default function Keys() {
           value={newKeyName}
           onChange={(e) => setNewKeyName(e.target.value)}
         />
-        <button
-          type="submit"
-          className="btn-primary"
-          disabled={creating}
-        >
+        <button type="submit" className="btn-primary" disabled={creating}>
           {creating ? 'Creating...' : 'Create key'}
         </button>
       </form>
@@ -158,14 +150,24 @@ export default function Keys() {
             const ageBadge = keyAgeBadge(key.created_at);
             const days = daysSince(key.created_at);
             return (
-              <div key={key.id} className="card key-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+              <div
+                key={key.id}
+                className="card key-item"
+                style={{ flexDirection: 'column', alignItems: 'stretch' }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '1rem',
+                    flexWrap: 'wrap',
+                  }}
+                >
                   <div className="key-info">
                     <span className="key-name">
                       {key.name}
-                      {ageBadge && (
-                        <span className={ageBadge.className}>{ageBadge.label}</span>
-                      )}
+                      {ageBadge && <span className={ageBadge.className}>{ageBadge.label}</span>}
                     </span>
                     <span className="key-prefix">{key.prefix}...</span>
                     <span className="key-created">

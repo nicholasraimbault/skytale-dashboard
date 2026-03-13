@@ -80,10 +80,18 @@
 
 /* Method colors */
 
-.method-get { color: var(--success); }
-.method-post { color: var(--accent); }
-.method-put { color: #f59e0b; }
-.method-delete { color: var(--error); }
+.method-get {
+  color: var(--success);
+}
+.method-post {
+  color: var(--accent);
+}
+.method-put {
+  color: #f59e0b;
+}
+.method-delete {
+  color: var(--error);
+}
 
 /* Main panel */
 

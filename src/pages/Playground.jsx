@@ -6,18 +6,43 @@ import '../styles/playground.css';
 
 const ENDPOINTS = [
   { group: 'Channels', method: 'GET', path: '/v1/channels', body: null },
-  { group: 'Channels', method: 'POST', path: '/v1/channels', body: '{\n  "name": "org/namespace/service"\n}' },
+  {
+    group: 'Channels',
+    method: 'POST',
+    path: '/v1/channels',
+    body: '{\n  "name": "org/namespace/service"\n}',
+  },
   { group: 'Channels', method: 'GET', path: '/v1/channels/{id}', body: null },
   { group: 'Agents', method: 'GET', path: '/v1/agents', body: null },
-  { group: 'Agents', method: 'POST', path: '/v1/agents', body: '{\n  "did": "did:key:z6Mk...",\n  "name": "my-agent",\n  "capabilities": ["read", "write"],\n  "visibility": "public"\n}' },
-  { group: 'Agents', method: 'PUT', path: '/v1/agents/{did}', body: '{\n  "name": "updated-name"\n}' },
+  {
+    group: 'Agents',
+    method: 'POST',
+    path: '/v1/agents',
+    body: '{\n  "did": "did:key:z6Mk...",\n  "name": "my-agent",\n  "capabilities": ["read", "write"],\n  "visibility": "public"\n}',
+  },
+  {
+    group: 'Agents',
+    method: 'PUT',
+    path: '/v1/agents/{did}',
+    body: '{\n  "name": "updated-name"\n}',
+  },
   { group: 'Agents', method: 'DELETE', path: '/v1/agents/{did}', body: null },
   { group: 'Keys', method: 'GET', path: '/v1/keys', body: null },
   { group: 'Keys', method: 'POST', path: '/v1/keys', body: '{\n  "name": "production"\n}' },
   { group: 'Revocations', method: 'GET', path: '/v1/revocations', body: null },
-  { group: 'Revocations', method: 'POST', path: '/v1/revocations', body: '{\n  "revoked_did": "did:key:z6Mk...",\n  "reason": "credential_compromise",\n  "signature": "...",\n  "scope": "full"\n}' },
+  {
+    group: 'Revocations',
+    method: 'POST',
+    path: '/v1/revocations',
+    body: '{\n  "revoked_did": "did:key:z6Mk...",\n  "reason": "credential_compromise",\n  "signature": "...",\n  "scope": "full"\n}',
+  },
   { group: 'Webhooks', method: 'GET', path: '/v1/webhooks', body: null },
-  { group: 'Webhooks', method: 'POST', path: '/v1/webhooks', body: '{\n  "url": "https://example.com/webhook",\n  "events": ["agent.revoked", "auth.failed"]\n}' },
+  {
+    group: 'Webhooks',
+    method: 'POST',
+    path: '/v1/webhooks',
+    body: '{\n  "url": "https://example.com/webhook",\n  "events": ["agent.revoked", "auth.failed"]\n}',
+  },
   { group: 'Usage', method: 'GET', path: '/v1/usage', body: null },
   { group: 'Billing', method: 'GET', path: '/v1/billing', body: null },
 ];
@@ -157,7 +182,7 @@ export default function Playground() {
               </div>
             </div>
 
-            {(selected.method !== 'GET') && (
+            {selected.method !== 'GET' && (
               <div className="playground-body-section">
                 <div className="playground-header-label">Body</div>
                 <textarea
@@ -190,9 +215,7 @@ export default function Playground() {
                       {status === 0 ? 'Network Error' : status}
                     </span>
                   )}
-                  {timing !== null && (
-                    <span className="playground-timing">{timing}ms</span>
-                  )}
+                  {timing !== null && <span className="playground-timing">{timing}ms</span>}
                 </div>
               </div>
               <pre className="playground-response-body mono">

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getUsage, getKeys, getAgents, getChannels, getRevocations, getWebhooks } from '../api.js';
+import { timeAgo, healthDotClass, formatNumber } from '../utils.js';
 import '../styles/pages.css';
 
 const PLAN_BADGES = {
@@ -12,32 +13,6 @@ const PLAN_BADGES = {
   pro: 'badge-pro',
   enterprise: 'badge-enterprise',
 };
-
-function formatNumber(n) {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
-  return String(n);
-}
-
-function timeAgo(isoDate) {
-  if (!isoDate) return null;
-  const diff = Date.now() - new Date(isoDate).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
-function healthDotClass(lastMessageAt) {
-  if (!lastMessageAt) return 'red';
-  const mins = (Date.now() - new Date(lastMessageAt).getTime()) / 60000;
-  if (mins < 5) return 'green';
-  if (mins <= 60) return 'amber';
-  return 'red';
-}
 
 function scoreColor(score) {
   if (score >= 80) return 'score-green';
@@ -125,17 +100,19 @@ export default function Overview() {
   const [keys, setKeys] = useState([]);
   const [agents, setAgents] = useState([]);
   const [channels, setChannels] = useState([]);
-  const [revocations, setRevocations] = useState([]);
+  const [_revocations, setRevocations] = useState([]);
   const [webhooks, setWebhooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [checklistDismissed, setChecklistDismissed] = useState(
-    () => localStorage.getItem('skytale_checklist_dismissed') === 'true'
+    () => localStorage.getItem('skytale_checklist_dismissed') === 'true',
   );
   const [dismissedActions, setDismissedActions] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('skytale_dismissed_actions') || '[]');
-    } catch { return []; }
+    } catch {
+      return [];
+    }
   });
   const [activeTab, setActiveTab] = useState('generic');
   const [codeCopied, setCodeCopied] = useState(false);
@@ -161,8 +138,18 @@ export default function Overview() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="page"><p className="loading">Loading dashboard...</p></div>;
-  if (error && !usage) return <div className="page"><p className="error-msg">{error}</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading dashboard...</p>
+      </div>
+    );
+  if (error && !usage)
+    return (
+      <div className="page">
+        <p className="error-msg">{error}</p>
+      </div>
+    );
 
   // --- Trust Health Score calculation ---
   const activeAgents = agents.filter((a) => a.status === 'active').length;
@@ -170,19 +157,26 @@ export default function Overview() {
   const encryptionScore = channels.length > 0 ? 100 : 0;
 
   const hasRevocationWebhook = webhooks.some(
-    (w) => w.events?.includes('agent.revoked') || w.event === 'agent.revoked'
+    (w) => w.events?.includes('agent.revoked') || w.event === 'agent.revoked',
   );
   const hasAuditWebhook = webhooks.some(
-    (w) => w.events?.includes('audit.entry') || w.event === 'audit.entry'
+    (w) => w.events?.includes('audit.entry') || w.event === 'audit.entry',
   );
   const allKeysRecent = keys.length > 0 && keys.every((k) => daysBetween(k.created_at) < 90);
-  const governanceParts = [hasRevocationWebhook ? 100 : 0, allKeysRecent ? 100 : 0, hasAuditWebhook ? 100 : 0];
-  const governanceScore = governanceParts.length > 0
-    ? Math.round(governanceParts.reduce((a, b) => a + b, 0) / governanceParts.length)
-    : 0;
+  const governanceParts = [
+    hasRevocationWebhook ? 100 : 0,
+    allKeysRecent ? 100 : 0,
+    hasAuditWebhook ? 100 : 0,
+  ];
+  const governanceScore =
+    governanceParts.length > 0
+      ? Math.round(governanceParts.reduce((a, b) => a + b, 0) / governanceParts.length)
+      : 0;
 
   const complianceScore = Math.round((identityScore + encryptionScore + governanceScore) / 3);
-  const overallScore = Math.round((identityScore + encryptionScore + governanceScore + complianceScore) / 4);
+  const overallScore = Math.round(
+    (identityScore + encryptionScore + governanceScore + complianceScore) / 4,
+  );
 
   // --- Checklist ---
   const plan = usage?.plan_tier || 'free';
@@ -207,7 +201,8 @@ export default function Overview() {
   }
 
   // --- SDK Quickstart ---
-  const firstApiKey = keys.length > 0 ? (keys[0].prefix ? keys[0].prefix + '...' : 'sk_live_...') : 'sk_live_...';
+  const firstApiKey =
+    keys.length > 0 ? (keys[0].prefix ? keys[0].prefix + '...' : 'sk_live_...') : 'sk_live_...';
   const snippets = frameworkSnippets(firstApiKey);
 
   function handleCopyCode() {
@@ -246,10 +241,10 @@ export default function Overview() {
   }
 
   // Sort: critical first, then warn
-  trustActions.sort((a, b) => (a.level === 'critical' ? -1 : 1) - (b.level === 'critical' ? -1 : 1));
-  const visibleActions = trustActions
-    .filter((a) => !dismissedActions.includes(a.id))
-    .slice(0, 3);
+  trustActions.sort(
+    (a, b) => (a.level === 'critical' ? -1 : 1) - (b.level === 'critical' ? -1 : 1),
+  );
+  const visibleActions = trustActions.filter((a) => !dismissedActions.includes(a.id)).slice(0, 3);
 
   function dismissAction(id) {
     const updated = [...dismissedActions, id];
@@ -258,10 +253,10 @@ export default function Overview() {
   }
 
   // --- Burn rate ---
-  const avgDailyUsage = chart.length > 0
-    ? chart.reduce((sum, d) => sum + (d.messages || 0), 0) / chart.length
-    : 0;
-  const daysUntilLimit = avgDailyUsage > 0 ? Math.floor((messagesLimit - messagesUsed) / avgDailyUsage) : null;
+  const avgDailyUsage =
+    chart.length > 0 ? chart.reduce((sum, d) => sum + (d.messages || 0), 0) / chart.length : 0;
+  const daysUntilLimit =
+    avgDailyUsage > 0 ? Math.floor((messagesLimit - messagesUsed) / avgDailyUsage) : null;
 
   // --- Channel health ---
   const topChannels = channels.slice(0, 6);
@@ -285,22 +280,36 @@ export default function Overview() {
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(identityScore)}`}>{identityScore}%</div>
             <div className="trust-card-label">Identity</div>
-            <Link to="/agents" className="trust-card-link">View details</Link>
+            <Link to="/agents" className="trust-card-link">
+              View details
+            </Link>
           </div>
           <div className="card trust-card">
-            <div className={`trust-card-score ${scoreColor(encryptionScore)}`}>{encryptionScore}%</div>
+            <div className={`trust-card-score ${scoreColor(encryptionScore)}`}>
+              {encryptionScore}%
+            </div>
             <div className="trust-card-label">Encryption</div>
-            <Link to="/channels" className="trust-card-link">View details</Link>
+            <Link to="/channels" className="trust-card-link">
+              View details
+            </Link>
           </div>
           <div className="card trust-card">
-            <div className={`trust-card-score ${scoreColor(governanceScore)}`}>{governanceScore}%</div>
+            <div className={`trust-card-score ${scoreColor(governanceScore)}`}>
+              {governanceScore}%
+            </div>
             <div className="trust-card-label">Governance</div>
-            <Link to="/keys" className="trust-card-link">View details</Link>
+            <Link to="/keys" className="trust-card-link">
+              View details
+            </Link>
           </div>
           <div className="card trust-card">
-            <div className={`trust-card-score ${scoreColor(complianceScore)}`}>{complianceScore}%</div>
+            <div className={`trust-card-score ${scoreColor(complianceScore)}`}>
+              {complianceScore}%
+            </div>
             <div className="trust-card-label">Compliance</div>
-            <Link to="/account" className="trust-card-link">View details</Link>
+            <Link to="/account" className="trust-card-link">
+              View details
+            </Link>
           </div>
         </div>
       </div>
@@ -310,7 +319,11 @@ export default function Overview() {
         <div className="card getting-started">
           <div className="getting-started-header">
             <h2>Getting Started</h2>
-            <button className="trust-action-dismiss" onClick={dismissChecklist} aria-label="Dismiss checklist">
+            <button
+              className="trust-action-dismiss"
+              onClick={dismissChecklist}
+              aria-label="Dismiss checklist"
+            >
               &#x2715;
             </button>
           </div>
@@ -334,7 +347,9 @@ export default function Overview() {
       {/* SDK Quickstart */}
       {showChecklist && !allChecklistDone && (
         <div className="card" style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>SDK Quickstart</h2>
+          <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
+            SDK Quickstart
+          </h2>
           <div className="quickstart-tabs">
             {Object.keys(TAB_LABELS).map((key) => (
               <button
@@ -346,7 +361,9 @@ export default function Overview() {
               </button>
             ))}
           </div>
-          <pre className="quickstart-code"><code>{snippets[activeTab]}</code></pre>
+          <pre className="quickstart-code">
+            <code>{snippets[activeTab]}</code>
+          </pre>
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', alignItems: 'center' }}>
             <button className="btn-ghost" onClick={handleCopyCode}>
               {codeCopied ? 'Copied!' : 'Copy'}
@@ -369,7 +386,11 @@ export default function Overview() {
           {visibleActions.map((action) => (
             <div key={action.id} className={`card trust-action-card ${action.level}`}>
               <span className="trust-action-text">{action.message}</span>
-              <Link to={action.link} className="btn-ghost" style={{ padding: '0.4rem 1rem', fontSize: '0.8125rem' }}>
+              <Link
+                to={action.link}
+                className="btn-ghost"
+                style={{ padding: '0.4rem 1rem', fontSize: '0.8125rem' }}
+              >
                 Fix
               </Link>
               <button
@@ -388,9 +409,7 @@ export default function Overview() {
       <div className="grid-3 overview-stats">
         <div className="card">
           <span className="stat-label">Plan</span>
-          <span className={`badge ${PLAN_BADGES[plan] || 'badge-free'}`}>
-            {plan}
-          </span>
+          <span className={`badge ${PLAN_BADGES[plan] || 'badge-free'}`}>{plan}</span>
         </div>
         <div className="card">
           <span className="stat-label">Messages this period</span>
@@ -466,12 +485,14 @@ export default function Overview() {
         )}
         {messagesPercent >= 90 && messagesPercent < 100 && (
           <div className="upgrade-banner critical">
-            You've used {Math.round(messagesPercent)}% of your message limit. <Link to="/account">Upgrade now</Link>
+            You've used {Math.round(messagesPercent)}% of your message limit.{' '}
+            <Link to="/account">Upgrade now</Link>
           </div>
         )}
         {messagesPercent >= 75 && messagesPercent < 90 && (
           <div className="upgrade-banner warn">
-            You've used {Math.round(messagesPercent)}% of your message limit. <Link to="/account">Consider upgrading</Link>
+            You've used {Math.round(messagesPercent)}% of your message limit.{' '}
+            <Link to="/account">Consider upgrading</Link>
           </div>
         )}
       </div>
@@ -479,10 +500,21 @@ export default function Overview() {
       {/* Channel Health Summary */}
       {topChannels.length > 0 && (
         <div style={{ marginTop: '2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2 className="section-heading" style={{ marginBottom: 0 }}>Channel Health</h2>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h2 className="section-heading" style={{ marginBottom: 0 }}>
+              Channel Health
+            </h2>
             {channels.length > 6 && (
-              <Link to="/channels" style={{ fontSize: '0.8125rem' }}>View all</Link>
+              <Link to="/channels" style={{ fontSize: '0.8125rem' }}>
+                View all
+              </Link>
             )}
           </div>
           <div className="channel-health-grid">
@@ -490,12 +522,16 @@ export default function Overview() {
               <div key={ch.id} className="card channel-health-card">
                 <div className="channel-health-name">
                   <span className={`health-dot ${healthDotClass(ch.last_message_at)}`} />
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span
+                    style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  >
                     {ch.name}
                   </span>
                 </div>
                 <div className="channel-health-activity">
-                  {ch.last_message_at ? `Last active ${timeAgo(ch.last_message_at)}` : 'No activity'}
+                  {ch.last_message_at
+                    ? `Last active ${timeAgo(ch.last_message_at)}`
+                    : 'No activity'}
                 </div>
               </div>
             ))}

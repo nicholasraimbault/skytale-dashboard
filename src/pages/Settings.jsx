@@ -2,7 +2,14 @@
 // See LICENSE for details.
 
 import { useState, useEffect, useCallback } from 'react';
-import { getSettings, updateSettings, getUsage, getAgents, getChannels, getAuditEntries } from '../api.js';
+import {
+  getSettings,
+  updateSettings,
+  getUsage,
+  getAgents,
+  getChannels,
+  getAuditEntries,
+} from '../api.js';
 import '../styles/settings.css';
 
 export default function Settings() {
@@ -130,12 +137,16 @@ export default function Settings() {
   }
 
   function handleDeleteAccount() {
-    if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) return;
+    if (
+      !window.confirm('Are you sure you want to delete your account? This action cannot be undone.')
+    )
+      return;
     showToast('Coming soon — account deletion is not yet available', 'info');
   }
 
   function handleRevokeAllKeys() {
-    if (!window.confirm('Revoke all API keys? All existing integrations will stop working.')) return;
+    if (!window.confirm('Revoke all API keys? All existing integrations will stop working.'))
+      return;
     showToast('Coming soon — bulk key revocation is not yet available', 'info');
   }
 
@@ -153,9 +164,7 @@ export default function Settings() {
       <p className="page-subtitle">Manage account preferences, exports, and integrations.</p>
 
       {toast && (
-        <div className={`settings-toast settings-toast-${toast.type}`}>
-          {toast.message}
-        </div>
+        <div className={`settings-toast settings-toast-${toast.type}`}>{toast.message}</div>
       )}
 
       {error && <p className="error-msg">{error}</p>}
@@ -231,9 +240,7 @@ export default function Settings() {
         </div>
         <div className="settings-field">
           <label className="settings-label">DID:web URI</label>
-          <div className="settings-readonly mono">
-            {settings.did_web || 'Not configured'}
-          </div>
+          <div className="settings-readonly mono">{settings.did_web || 'Not configured'}</div>
         </div>
       </div>
 
@@ -264,14 +271,14 @@ export default function Settings() {
       {/* Danger Zone */}
       <div className="card settings-section settings-danger-zone">
         <h2 className="settings-section-title settings-danger-title">Danger Zone</h2>
-        <p className="settings-section-desc">
-          Irreversible actions. Proceed with extreme caution.
-        </p>
+        <p className="settings-section-desc">Irreversible actions. Proceed with extreme caution.</p>
         <div className="settings-danger-actions">
           <div className="settings-danger-item">
             <div>
               <strong>Delete Account</strong>
-              <p className="settings-danger-desc">Permanently delete your account and all associated data.</p>
+              <p className="settings-danger-desc">
+                Permanently delete your account and all associated data.
+              </p>
             </div>
             <button className="btn-danger" onClick={handleDeleteAccount}>
               Delete Account
@@ -280,7 +287,9 @@ export default function Settings() {
           <div className="settings-danger-item">
             <div>
               <strong>Revoke All Keys</strong>
-              <p className="settings-danger-desc">Revoke every API key. All integrations will immediately lose access.</p>
+              <p className="settings-danger-desc">
+                Revoke every API key. All integrations will immediately lose access.
+              </p>
             </div>
             <button className="btn-danger" onClick={handleRevokeAllKeys}>
               Revoke All Keys

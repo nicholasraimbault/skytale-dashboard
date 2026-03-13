@@ -4,34 +4,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { getChannel, getPendingJoins, createInvite } from '../api.js';
+import { formatDate, timeAgo, healthDotClass } from '../utils.js';
 import './ChannelDetail.css';
-
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
-
-function timeAgo(iso) {
-  if (!iso) return null;
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  if (diffMin < 1) return 'just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHr = Math.floor(diffMin / 60);
-  if (diffHr < 24) return `${diffHr}h ago`;
-  const diffDay = Math.floor(diffHr / 24);
-  return `${diffDay}d ago`;
-}
-
-function getHealthColor(lastMessageAt) {
-  if (!lastMessageAt) return 'red';
-  const diffMs = Date.now() - new Date(lastMessageAt).getTime();
-  const diffMin = diffMs / 60000;
-  if (diffMin < 5) return 'green';
-  if (diffMin < 60) return 'amber';
-  return 'red';
-}
 
 export default function ChannelDetail() {
   const { id } = useParams();
@@ -85,19 +59,34 @@ export default function ChannelDetail() {
     }
   }
 
-  if (loading) return <div className="page"><p className="loading">Loading channel...</p></div>;
-  if (error && !channel) return <div className="page"><p className="error-msg">{error}</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading channel...</p>
+      </div>
+    );
+  if (error && !channel)
+    return (
+      <div className="page">
+        <p className="error-msg">{error}</p>
+      </div>
+    );
 
-  const healthColor = channel ? getHealthColor(channel.last_message_at) : 'red';
+  const healthColor = channel ? healthDotClass(channel.last_message_at) : 'red';
 
   return (
     <div className="page">
-      <Link to="/channels" className="channel-detail-back">&larr; Channels</Link>
+      <Link to="/channels" className="channel-detail-back">
+        &larr; Channels
+      </Link>
 
       <div className="channel-detail-header">
         <div className="channel-detail-title">
           <h1>{channel?.name || 'Channel'}</h1>
-          <span className={`channel-health-dot ${healthColor}`} title={`Health: ${healthColor}`}></span>
+          <span
+            className={`channel-health-dot ${healthColor}`}
+            title={`Health: ${healthColor}`}
+          ></span>
         </div>
         {channel?.created_at && (
           <span className="channel-detail-date">Created {formatDate(channel.created_at)}</span>
@@ -111,11 +100,14 @@ export default function ChannelDetail() {
           <p>Copy this invite token. It will expire based on your TTL setting.</p>
           <div className="new-key-row">
             <code>{inviteToken}</code>
-            <button className="btn-copy" onClick={() => {
-              navigator.clipboard.writeText(inviteToken);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 2000);
-            }}>
+            <button
+              className="btn-copy"
+              onClick={() => {
+                navigator.clipboard.writeText(inviteToken);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+            >
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
@@ -135,7 +127,9 @@ export default function ChannelDetail() {
           <h2 className="section-heading">Activity</h2>
           <div className="channel-detail-activity">
             {channel?.last_message_at ? (
-              <p>Last message <strong>{timeAgo(channel.last_message_at)}</strong></p>
+              <p>
+                Last message <strong>{timeAgo(channel.last_message_at)}</strong>
+              </p>
             ) : (
               <p className="channel-no-activity">No messages yet</p>
             )}
@@ -150,7 +144,9 @@ export default function ChannelDetail() {
             <div className="channel-detail-pending">
               {pendingJoins.map((req, i) => (
                 <div key={i} className="pending-item">
-                  <span className="pending-identity mono">{req.identity || req.did || 'Unknown'}</span>
+                  <span className="pending-identity mono">
+                    {req.identity || req.did || 'Unknown'}
+                  </span>
                   {req.created_at && (
                     <span className="pending-date">{formatDate(req.created_at)}</span>
                   )}
@@ -198,7 +194,11 @@ export default function ChannelDetail() {
                 <button type="submit" className="btn-primary" disabled={creatingInvite}>
                   {creatingInvite ? 'Creating...' : 'Create'}
                 </button>
-                <button type="button" className="btn-ghost" onClick={() => setShowInviteForm(false)}>
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={() => setShowInviteForm(false)}
+                >
                   Cancel
                 </button>
               </div>

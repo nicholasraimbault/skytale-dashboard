@@ -20,9 +20,7 @@ export async function onRequest(context) {
   const res = await fetch(target, {
     method: request.method,
     headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD'
-      ? request.body
-      : undefined,
+    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
     redirect: 'manual',
   });
 

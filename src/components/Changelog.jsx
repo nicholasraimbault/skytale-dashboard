@@ -29,8 +29,7 @@ export default function Changelog() {
   const [lastSeen, setLastSeen] = useState(getLastSeen);
   const modalRef = useRef(null);
 
-  const hasUnseen =
-    changelogData.length > 0 && (!lastSeen || changelogData[0].date > lastSeen);
+  const hasUnseen = changelogData.length > 0 && (!lastSeen || changelogData[0].date > lastSeen);
 
   function handleOpen() {
     setOpen(true);
@@ -56,11 +55,7 @@ export default function Changelog() {
 
   return (
     <>
-      <button
-        className="changelog-trigger"
-        onClick={handleOpen}
-        aria-label="What's new"
-      >
+      <button className="changelog-trigger" onClick={handleOpen} aria-label="What's new">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4 5.6 21.2 8 14 2 9.2h7.6z" />
         </svg>
@@ -69,18 +64,10 @@ export default function Changelog() {
 
       {open && (
         <div className="changelog-overlay" onClick={() => setOpen(false)}>
-          <div
-            className="changelog-modal"
-            ref={modalRef}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="changelog-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
             <div className="changelog-modal-header">
               <h2 className="changelog-modal-title">What's New</h2>
-              <button
-                className="changelog-close"
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-              >
+              <button className="changelog-close" onClick={() => setOpen(false)} aria-label="Close">
                 <svg
                   width="16"
                   height="16"

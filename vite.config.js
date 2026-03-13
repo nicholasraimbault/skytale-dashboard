@@ -1,8 +1,8 @@
 // Copyright 2026 Skytale. Licensed under the Business Source License 1.1.
 // See LICENSE for details.
 
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -16,4 +16,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

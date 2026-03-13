@@ -4,33 +4,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { getChannels, createInvite } from '../api.js';
+import { formatDate, timeAgo, healthDotClass } from '../utils.js';
 import '../styles/pages.css';
-
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
-
-function timeAgo(isoDate) {
-  if (!isoDate) return null;
-  const diff = Date.now() - new Date(isoDate).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
-function healthDotClass(lastMessageAt) {
-  if (!lastMessageAt) return 'red';
-  const mins = (Date.now() - new Date(lastMessageAt).getTime()) / 60000;
-  if (mins < 5) return 'green';
-  if (mins <= 60) return 'amber';
-  return 'red';
-}
 
 export default function Channels() {
   const [channels, setChannels] = useState([]);
@@ -61,7 +36,12 @@ export default function Channels() {
     }
   }
 
-  if (loading) return <div className="page"><p className="loading">Loading channels...</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading channels...</p>
+      </div>
+    );
 
   return (
     <div className="page">
@@ -77,11 +57,14 @@ export default function Channels() {
           <p>Copy this invite token. It expires in 1 hour.</p>
           <div className="new-key-row">
             <code>{inviteToken}</code>
-            <button className="btn-copy" onClick={() => {
-              navigator.clipboard.writeText(inviteToken);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 2000);
-            }}>
+            <button
+              className="btn-copy"
+              onClick={() => {
+                navigator.clipboard.writeText(inviteToken);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+            >
               {copied ? 'Copied!' : 'Copy'}
             </button>
           </div>
@@ -102,28 +85,39 @@ export default function Channels() {
             <div key={ch.id} className="card key-item">
               <div className="key-info">
                 <span className="key-name">
-                  <span className={`health-dot ${healthDotClass(ch.last_message_at)}`} />
-                  {' '}
-                  <Link to={`/channels/${ch.id}`} style={{ color: 'var(--text)', textDecoration: 'none' }}>
+                  <span className={`health-dot ${healthDotClass(ch.last_message_at)}`} />{' '}
+                  <Link
+                    to={`/channels/${ch.id}`}
+                    style={{ color: 'var(--text)', textDecoration: 'none' }}
+                  >
                     {ch.name}
                   </Link>
                 </span>
                 <span className="key-prefix">
                   {ch.member_count != null && (
-                    <span className="badge" style={{ fontSize: '0.6875rem', padding: '0.125rem 0.5rem', marginRight: '0.5rem' }}>
+                    <span
+                      className="badge"
+                      style={{
+                        fontSize: '0.6875rem',
+                        padding: '0.125rem 0.5rem',
+                        marginRight: '0.5rem',
+                      }}
+                    >
                       {ch.member_count} member{ch.member_count !== 1 ? 's' : ''}
                     </span>
                   )}
-                  {ch.last_message_at && (
-                    <span>Last active {timeAgo(ch.last_message_at)}</span>
-                  )}
+                  {ch.last_message_at && <span>Last active {timeAgo(ch.last_message_at)}</span>}
                 </span>
                 {ch.created_at && (
                   <span className="key-created">Created {formatDate(ch.created_at)}</span>
                 )}
               </div>
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <Link to={`/channels/${ch.id}`} className="btn-ghost" style={{ padding: '0.4rem 1rem', fontSize: '0.8125rem' }}>
+                <Link
+                  to={`/channels/${ch.id}`}
+                  className="btn-ghost"
+                  style={{ padding: '0.4rem 1rem', fontSize: '0.8125rem' }}
+                >
                   View
                 </Link>
                 <button

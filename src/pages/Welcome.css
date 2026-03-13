@@ -63,7 +63,9 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .welcome-tab:hover {
@@ -157,7 +159,9 @@
   padding: 0.625rem 0.875rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .btn-copy:hover {

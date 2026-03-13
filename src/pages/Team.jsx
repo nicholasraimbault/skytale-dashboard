@@ -15,7 +15,9 @@ import '../styles/team.css';
 function formatDate(epoch) {
   if (!epoch) return '--';
   return new Date(epoch * 1000).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   });
 }
 
@@ -33,7 +35,7 @@ export default function Team() {
 
   useEffect(() => {
     getAccount()
-      .then(acct => {
+      .then((acct) => {
         setAccount(acct);
         if (acct.org_id) {
           return Promise.all([
@@ -43,12 +45,15 @@ export default function Team() {
         }
         return [[], []];
       })
-      .then(([m, i]) => { setMembers(m || []); setInvites(i || []); })
-      .catch(err => setError(err.message))
+      .then(([m, i]) => {
+        setMembers(m || []);
+        setInvites(i || []);
+      })
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
-  const isAdmin = members.some(m => m.account_id === account?.id && m.role === 'admin');
+  const isAdmin = members.some((m) => m.account_id === account?.id && m.role === 'admin');
 
   async function handleInvite(e) {
     e.preventDefault();
@@ -77,10 +82,8 @@ export default function Team() {
     setError(null);
     try {
       await updateMemberRole(account.org_id, memberId, { role: newRole });
-      setMembers(prev =>
-        prev.map(m =>
-          m.account_id === memberId ? { ...m, role: newRole } : m
-        )
+      setMembers((prev) =>
+        prev.map((m) => (m.account_id === memberId ? { ...m, role: newRole } : m)),
       );
     } catch (err) {
       setError(err.message);
@@ -92,14 +95,24 @@ export default function Team() {
     setError(null);
     try {
       await removeMember(account.org_id, memberId);
-      setMembers(prev => prev.filter(m => m.account_id !== memberId));
+      setMembers((prev) => prev.filter((m) => m.account_id !== memberId));
     } catch (err) {
       setError(err.message);
     }
   }
 
-  if (loading) return <div className="page"><p className="loading">Loading team...</p></div>;
-  if (error && !account) return <div className="page"><p className="error-msg">{error}</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading team...</p>
+      </div>
+    );
+  if (error && !account)
+    return (
+      <div className="page">
+        <p className="error-msg">{error}</p>
+      </div>
+    );
 
   if (!account?.org_id) {
     return (
@@ -148,9 +161,7 @@ export default function Team() {
               {inviteLoading ? 'Sending...' : 'Send Invite'}
             </button>
           </form>
-          {inviteSuccess && (
-            <div className="team-invite-success">{inviteSuccess}</div>
-          )}
+          {inviteSuccess && <div className="team-invite-success">{inviteSuccess}</div>}
         </div>
       )}
 
@@ -213,7 +224,8 @@ export default function Team() {
                 <div className="team-member-info">
                   <span className="team-member-email">{invite.email}</span>
                   <span className="team-member-date">
-                    Sent {formatDate(invite.created_at)} &middot; Expires {formatDate(invite.expires_at)}
+                    Sent {formatDate(invite.created_at)} &middot; Expires{' '}
+                    {formatDate(invite.expires_at)}
                   </span>
                 </div>
                 <div className="team-member-right">
@@ -223,15 +235,13 @@ export default function Team() {
                   <div className="team-member-actions">
                     <button
                       className="btn-ghost"
-                      onClick={() => window.alert('Coming soon')}
+                      disabled
+                      title="Coming soon"
                       style={{ fontSize: '0.8125rem', padding: '0.4rem 1rem' }}
                     >
                       Resend
                     </button>
-                    <button
-                      className="btn-danger"
-                      onClick={() => window.alert('Coming soon')}
-                    >
+                    <button className="btn-danger" disabled title="Coming soon">
                       Revoke
                     </button>
                   </div>
@@ -244,10 +254,7 @@ export default function Team() {
 
       {/* Role Descriptions */}
       <div className="card team-roles-card">
-        <button
-          className="team-roles-toggle"
-          onClick={() => setRolesExpanded(!rolesExpanded)}
-        >
+        <button className="team-roles-toggle" onClick={() => setRolesExpanded(!rolesExpanded)}>
           <span>What can each role do?</span>
           <span className="team-roles-chevron">{rolesExpanded ? '\u25B2' : '\u25BC'}</span>
         </button>

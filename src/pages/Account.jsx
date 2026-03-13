@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { getAccount, createBillingPortal, createCheckout, getBilling } from '../api.js';
+import { formatDate } from '../utils.js';
 import '../styles/pages.css';
 
 const PLAN_BADGES = {
@@ -11,13 +12,6 @@ const PLAN_BADGES = {
   pro: 'badge-pro',
   enterprise: 'badge-enterprise',
 };
-
-function formatDate(iso) {
-  if (!iso) return '--';
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
 
 export default function Account() {
   const [account, setAccount] = useState(null);
@@ -28,10 +22,7 @@ export default function Account() {
   const [upgradeLoading, setUpgradeLoading] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      getAccount(),
-      getBilling().catch(() => null),
-    ])
+    Promise.all([getAccount(), getBilling().catch(() => null)])
       .then(([acct, billingData]) => {
         setAccount(acct);
         setBilling(billingData);
@@ -69,8 +60,18 @@ export default function Account() {
     }
   }
 
-  if (loading) return <div className="page"><p className="loading">Loading account...</p></div>;
-  if (error && !account) return <div className="page"><p className="error-msg">{error}</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading account...</p>
+      </div>
+    );
+  if (error && !account)
+    return (
+      <div className="page">
+        <p className="error-msg">{error}</p>
+      </div>
+    );
 
   const plan = account?.plan || 'free';
 
@@ -84,11 +85,7 @@ export default function Account() {
           {account?.github_login && (
             <div className="account-field account-github-row">
               {account?.avatar_url && (
-                <img
-                  src={account.avatar_url}
-                  alt=""
-                  className="account-avatar"
-                />
+                <img src={account.avatar_url} alt="" className="account-avatar" />
               )}
               <div>
                 <div className="account-field-label">GitHub</div>
@@ -110,9 +107,7 @@ export default function Account() {
           <div className="account-field">
             <div className="account-field-label">Plan</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <span className={`badge ${PLAN_BADGES[plan] || 'badge-free'}`}>
-                {plan}
-              </span>
+              <span className={`badge ${PLAN_BADGES[plan] || 'badge-free'}`}>{plan}</span>
               {plan === 'free' && (
                 <button
                   className="btn-primary"
@@ -135,8 +130,10 @@ export default function Account() {
               {billing.status && (
                 <div>
                   <span style={{ color: 'var(--text-dim)' }}>Status: </span>
-                  <span className={`badge ${billing.status === 'active' ? 'badge-active' : billing.status === 'past_due' ? 'badge-warning' : 'badge-free'}`}
-                    style={{ fontSize: '0.6875rem', padding: '0.125rem 0.5rem' }}>
+                  <span
+                    className={`badge ${billing.status === 'active' ? 'badge-active' : billing.status === 'past_due' ? 'badge-warning' : 'badge-free'}`}
+                    style={{ fontSize: '0.6875rem', padding: '0.125rem 0.5rem' }}
+                  >
                     {billing.status}
                   </span>
                 </div>
@@ -156,17 +153,18 @@ export default function Account() {
           )}
 
           <p>
-            Manage your subscription, payment methods, and invoices through the Stripe billing portal.
+            Manage your subscription, payment methods, and invoices through the Stripe billing
+            portal.
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <button
-              className="btn-primary"
-              onClick={handleBillingPortal}
-              disabled={portalLoading}
-            >
+            <button className="btn-primary" onClick={handleBillingPortal} disabled={portalLoading}>
               {portalLoading ? 'Opening...' : 'Manage billing'}
             </button>
-            <Link to="/pricing" className="btn-ghost" style={{ fontSize: '0.8125rem', padding: '0.4rem 1.2rem' }}>
+            <Link
+              to="/pricing"
+              className="btn-ghost"
+              style={{ fontSize: '0.8125rem', padding: '0.4rem 1.2rem' }}
+            >
               Compare plans
             </Link>
           </div>

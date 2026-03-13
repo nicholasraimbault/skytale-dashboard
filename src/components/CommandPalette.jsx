@@ -28,9 +28,7 @@ export default function CommandPalette() {
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
-  const filtered = ACTIONS.filter(
-    (a) => a.name.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filtered = ACTIONS.filter((a) => a.name.toLowerCase().includes(query.toLowerCase()));
 
   // Group filtered results by section, preserving order
   const sections = [];
@@ -115,11 +113,7 @@ export default function CommandPalette() {
 
   return createPortal(
     <div className="cmd-palette-backdrop" onClick={close}>
-      <div
-        className="cmd-palette"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleKeyDown}
-      >
+      <div className="cmd-palette" onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown}>
         <input
           ref={inputRef}
           className="cmd-palette-input"

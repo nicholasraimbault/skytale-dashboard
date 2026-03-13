@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getActivityLog } from '../api.js';
+import { timeAgo } from '../utils.js';
 import './NotificationCenter.css';
 
 const STORAGE_KEY = 'skytale_notifications_read';
@@ -26,21 +27,6 @@ function classifyEvent(entry) {
     return { type: 'failure', label: 'Delivery Failure' };
   }
   return null;
-}
-
-function relativeTime(dateStr) {
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diff = Math.max(0, now - then);
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) return `${days}d ago`;
-  if (hours > 0) return `${hours}h ago`;
-  if (minutes > 0) return `${minutes}m ago`;
-  return 'just now';
 }
 
 function getReadIds() {
@@ -156,9 +142,7 @@ export default function NotificationCenter() {
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
-        {unreadCount > 0 && (
-          <span className="notification-badge">{unreadCount}</span>
-        )}
+        {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
       </button>
 
       {open && (
@@ -192,9 +176,7 @@ export default function NotificationCenter() {
                       <span className="notification-label">{n.label}</span>
                       <span className="notification-action">{n.action}</span>
                     </div>
-                    <span className="notification-time">
-                      {relativeTime(n.timestamp)}
-                    </span>
+                    <span className="notification-time">{timeAgo(n.timestamp)}</span>
                   </button>
                 );
               })}

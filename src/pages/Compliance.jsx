@@ -5,12 +5,6 @@ import { useState, useEffect } from 'react';
 import { getKeys, getChannels, getAgents, getRevocations, getUsage } from '../api.js';
 import '../styles/compliance.css';
 
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
-
 function daysSince(iso) {
   return Math.floor((Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60 * 24));
 }
@@ -117,7 +111,10 @@ export default function Compliance() {
       title: 'Record-Keeping',
       article: 'Art. 12',
       items: [
-        { label: `${data.channels.length} channel(s) with audit trail support`, ok: data.channels.length > 0 },
+        {
+          label: `${data.channels.length} channel(s) with audit trail support`,
+          ok: data.channels.length > 0,
+        },
         { label: 'Hash-chained audit log entries with epoch tracking', ok: true },
         { label: 'E2E encrypted audit blobs with local decryption', ok: true },
       ],
@@ -128,7 +125,10 @@ export default function Compliance() {
       article: 'Art. 13',
       items: [
         { label: `${data.agents.length} registered agent(s)`, ok: data.agents.length > 0 },
-        { label: `Visibility distribution: ${visibilityCounts.public} public, ${visibilityCounts.organization} org, ${visibilityCounts.private} private`, ok: true },
+        {
+          label: `Visibility distribution: ${visibilityCounts.public} public, ${visibilityCounts.organization} org, ${visibilityCounts.private} private`,
+          ok: true,
+        },
         { label: 'DID-based identity with public verifiability', ok: true },
       ],
     },
@@ -137,11 +137,15 @@ export default function Compliance() {
       title: 'Cybersecurity',
       article: 'Art. 15',
       items: [
-        { label: `${data.channels.length} encrypted channel(s) active`, ok: data.channels.length > 0 },
         {
-          label: staleKeys.length > 0
-            ? `${staleKeys.length} key(s) older than 90 days — rotation recommended`
-            : 'All keys within rotation window (< 90 days)',
+          label: `${data.channels.length} encrypted channel(s) active`,
+          ok: data.channels.length > 0,
+        },
+        {
+          label:
+            staleKeys.length > 0
+              ? `${staleKeys.length} key(s) older than 90 days — rotation recommended`
+              : 'All keys within rotation window (< 90 days)',
           ok: staleKeys.length === 0,
           warn: staleKeys.length > 0,
         },
@@ -151,9 +155,7 @@ export default function Compliance() {
   ];
 
   const allSections = [...STATIC_SECTIONS, ...dynamicSections];
-  const passingSections = allSections.filter(
-    (s) => s.items.every((item) => item.ok)
-  ).length;
+  const passingSections = allSections.filter((s) => s.items.every((item) => item.ok)).length;
   const readiness = Math.round((passingSections / allSections.length) * 100);
 
   return (
@@ -163,7 +165,9 @@ export default function Compliance() {
 
       <div className="card compliance-summary">
         <div className="compliance-score">
-          <span className={`compliance-score-value ${readiness === 100 ? 'score-green' : readiness >= 80 ? 'score-amber' : 'score-red'}`}>
+          <span
+            className={`compliance-score-value ${readiness === 100 ? 'score-green' : readiness >= 80 ? 'score-amber' : 'score-red'}`}
+          >
             {readiness}%
           </span>
           <span className="compliance-score-label">Compliance Readiness</span>
@@ -186,10 +190,14 @@ export default function Compliance() {
             <ul className="compliance-checklist">
               {section.items.map((item, i) => (
                 <li key={i} className="compliance-check-item">
-                  <span className={`compliance-check-icon ${item.ok ? (item.warn ? 'warn' : 'pass') : 'fail'}`}>
+                  <span
+                    className={`compliance-check-icon ${item.ok ? (item.warn ? 'warn' : 'pass') : 'fail'}`}
+                  >
                     {item.ok ? (item.warn ? '!' : '\u2713') : '\u2717'}
                   </span>
-                  <span className={`compliance-check-label ${item.warn ? 'compliance-warn-text' : ''}`}>
+                  <span
+                    className={`compliance-check-label ${item.warn ? 'compliance-warn-text' : ''}`}
+                  >
                     {item.label}
                   </span>
                 </li>

@@ -11,18 +11,8 @@ import {
   deleteWebhook,
   getAuditEntries,
 } from '../api.js';
+import { formatDate, truncate } from '../utils.js';
 import './Security.css';
-
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
-
-function truncate(str, len) {
-  if (!str || str.length <= len) return str;
-  return str.slice(0, len) + '...';
-}
 
 const WEBHOOK_EVENTS = [
   'agent.revoked',
@@ -96,7 +86,9 @@ function RevocationsTab() {
     }
   }, []);
 
-  useEffect(() => { fetchRevocations(); }, [fetchRevocations]);
+  useEffect(() => {
+    fetchRevocations();
+  }, [fetchRevocations]);
 
   async function handleRevoke(e) {
     e.preventDefault();
@@ -262,7 +254,9 @@ function WebhooksTab() {
     }
   }, []);
 
-  useEffect(() => { fetchWebhooks(); }, [fetchWebhooks]);
+  useEffect(() => {
+    fetchWebhooks();
+  }, [fetchWebhooks]);
 
   function toggleEvent(event) {
     setForm((prev) => ({
@@ -350,7 +344,9 @@ function WebhooksTab() {
                   <span className="mono">{truncate(wh.url, 40)}</span>
                   <div className="webhook-events">
                     {wh.events?.map((ev) => (
-                      <span key={ev} className="event-badge">{ev}</span>
+                      <span key={ev} className="event-badge">
+                        {ev}
+                      </span>
                     ))}
                   </div>
                   {wh.created_at && (
