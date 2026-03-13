@@ -19,9 +19,14 @@
 }
 
 .login-logo h1 {
+  font-family: 'Rethink Sans', sans-serif;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 400;
   margin-bottom: 0.25rem;
+}
+
+.login-logo h1 strong {
+  font-weight: 700;
 }
 
 .login-logo h1 span {
