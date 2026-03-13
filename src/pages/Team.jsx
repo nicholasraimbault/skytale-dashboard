@@ -8,6 +8,8 @@ import {
   updateMemberRole,
   removeMember,
   getTeamInvites,
+  revokeTeamInvite,
+  resendTeamInvite,
   getAccount,
 } from '../api.js';
 import '../styles/team.css';
@@ -32,6 +34,8 @@ export default function Team() {
   const [inviteSuccess, setInviteSuccess] = useState(null);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [rolesExpanded, setRolesExpanded] = useState(false);
+  const [resendingId, setResendingId] = useState(null);
+  const [revokingId, setRevokingId] = useState(null);
 
   useEffect(() => {
     getAccount()
@@ -69,8 +73,7 @@ export default function Team() {
       setInviteSuccess(`Invite sent to ${inviteEmail.trim()}`);
       setInviteEmail('');
       setInviteRole('viewer');
-      const updatedInvites = await getTeamInvites(account.org_id).catch(() => []);
-      setInvites(updatedInvites || []);
+      await refreshInvites();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -98,6 +101,39 @@ export default function Team() {
       setMembers((prev) => prev.filter((m) => m.account_id !== memberId));
     } catch (err) {
       setError(err.message);
+    }
+  }
+
+  async function refreshInvites() {
+    const updated = await getTeamInvites(account.org_id).catch(() => []);
+    setInvites(updated || []);
+  }
+
+  async function handleResend(inviteId) {
+    setError(null);
+    setResendingId(inviteId);
+    try {
+      await resendTeamInvite(account.org_id, inviteId);
+      setInviteSuccess('Invite resent successfully');
+      await refreshInvites();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setResendingId(null);
+    }
+  }
+
+  async function handleRevoke(inviteId, email) {
+    if (!window.confirm(`Revoke invite for ${email}?`)) return;
+    setError(null);
+    setRevokingId(inviteId);
+    try {
+      await revokeTeamInvite(account.org_id, inviteId);
+      await refreshInvites();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRevokingId(null);
     }
   }
 
@@ -239,14 +275,18 @@ export default function Team() {
                   <div className="team-member-actions">
                     <button
                       className="btn-ghost"
-                      disabled
-                      title="Coming soon"
+                      onClick={() => handleResend(invite.id)}
+                      disabled={resendingId === invite.id}
                       style={{ fontSize: '0.8125rem', padding: '0.4rem 1rem' }}
                     >
-                      Resend
+                      {resendingId === invite.id ? 'Sending...' : 'Resend'}
                     </button>
-                    <button className="btn-danger" disabled title="Coming soon">
-                      Revoke
+                    <button
+                      className="btn-danger"
+                      onClick={() => handleRevoke(invite.id, invite.email)}
+                      disabled={revokingId === invite.id}
+                    >
+                      {revokingId === invite.id ? 'Revoking...' : 'Revoke'}
                     </button>
                   </div>
                 </div>

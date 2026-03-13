@@ -238,3 +238,15 @@ export async function removeMember(orgId, accountId) {
 export async function getTeamInvites(orgId) {
   return request(`/teams/${orgId}/invites`);
 }
+
+export async function revokeTeamInvite(orgId, inviteId) {
+  return request(`/teams/${orgId}/invites/${inviteId}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function resendTeamInvite(orgId, inviteId) {
+  return request(`/teams/${orgId}/invites/${inviteId}/resend`, {
+    method: 'POST',
+  });
+}
