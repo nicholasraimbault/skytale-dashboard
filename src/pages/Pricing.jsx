@@ -26,11 +26,11 @@ const PLANS = [
   {
     tier: 'pro',
     name: 'Pro',
-    price: '$49',
+    price: '$29',
     period: '/mo',
     featured: true,
     features: [
-      { label: 'Messages', value: '1M/mo' },
+      { label: 'Messages', value: '1M included, then $0.10/1K' },
       { label: 'Channels', value: 'Unlimited' },
       { label: 'Agents', value: '100' },
       { label: 'Audit retention', value: '90 days' },
@@ -69,7 +69,7 @@ const FAQ = [
   {
     question: 'What happens if I exceed my message quota?',
     answer:
-      'You will receive a warning at 80% usage. At 100%, new messages are queued (not dropped) until the next billing cycle or until you upgrade.',
+      'Pro plans include 1M messages. Beyond that, additional messages are billed at $0.10 per 1K — no hard caps, your agents never stop. You will receive a warning at 80% of your included quota.',
   },
   {
     question: 'Is there a free trial for Pro?',
