@@ -22,7 +22,9 @@ function solveBezier(x1, y1, x2, y2, x) {
   return 3 * (1 - t) * (1 - t) * t * y1 + 3 * (1 - t) * t * t * y2 + t * t * t;
 }
 
-function easeOut(x) { return solveBezier(0.25, 0.1, 0.25, 1, x); }
+function easeOut(x) {
+  return solveBezier(0.25, 0.1, 0.25, 1, x);
+}
 
 function snapFlat(x) {
   if (x <= 0) return 0;
@@ -77,7 +79,7 @@ export default function Nav({ onLogout }) {
       borderRadius: cs.borderRadius,
     };
 
-    animsRef.current.forEach(a => a.cancel());
+    animsRef.current.forEach((a) => a.cancel());
 
     startRef.current = scaleRef.current;
     targetRef.current = opening ? 1 : MIN_SCALE;
@@ -114,7 +116,9 @@ export default function Nav({ onLogout }) {
       glass.animate(gKf, { duration: dur, easing: 'linear', fill: 'both' }),
     ];
 
-    animsRef.current[0].onfinish = () => { scaleRef.current = targetRef.current; };
+    animsRef.current[0].onfinish = () => {
+      scaleRef.current = targetRef.current;
+    };
 
     setIsOpen(opening);
   }, [isOpen]);
@@ -132,7 +136,7 @@ export default function Nav({ onLogout }) {
 
   // Cleanup animations on unmount
   useEffect(() => {
-    return () => animsRef.current.forEach(a => a.cancel());
+    return () => animsRef.current.forEach((a) => a.cancel());
   }, []);
 
   return (
@@ -141,7 +145,10 @@ export default function Nav({ onLogout }) {
       <aside className="nav-sidebar">
         <div className="nav-sidebar-header">
           <div className="nav-sidebar-brand">
-            <strong>sky</strong>tale<strong><span>.</span></strong>
+            <strong>sky</strong>tale
+            <strong>
+              <span>.</span>
+            </strong>
           </div>
           <div className="nav-sidebar-actions">
             <Changelog />
@@ -151,11 +158,7 @@ export default function Nav({ onLogout }) {
 
         <div className="nav-section">
           <div className="nav-section-label">Trust</div>
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
+          <NavLink to="/" end className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Overview
           </NavLink>
           <NavLink
@@ -196,10 +199,7 @@ export default function Nav({ onLogout }) {
 
         <div className="nav-section">
           <div className="nav-section-label">Develop</div>
-          <NavLink
-            to="/keys"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
+          <NavLink to="/keys" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             API Keys
           </NavLink>
           <NavLink
@@ -224,10 +224,7 @@ export default function Nav({ onLogout }) {
           >
             Settings
           </NavLink>
-          <NavLink
-            to="/team"
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
+          <NavLink to="/team" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Team
           </NavLink>
           <NavLink
@@ -255,7 +252,10 @@ export default function Nav({ onLogout }) {
         <div className="nav-glass" ref={glassRef}></div>
         <div className="nav-inner">
           <div className="nav-brand">
-            <strong>sky</strong>tale<strong><span>.</span></strong>
+            <strong>sky</strong>tale
+            <strong>
+              <span>.</span>
+            </strong>
           </div>
 
           <button

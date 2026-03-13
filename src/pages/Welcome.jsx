@@ -73,7 +73,9 @@ export default function Welcome() {
     }
 
     init();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const displayName = account?.github_login || account?.email || 'there';
@@ -85,7 +87,9 @@ export default function Welcome() {
       await navigator.clipboard.writeText(apiKey);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {}
+    } catch {
+      // clipboard API may not be available
+    }
   }
 
   async function handleRetry() {
@@ -103,24 +107,19 @@ export default function Welcome() {
       <div className="welcome-content">
         <div className="welcome-header">
           {account?.avatar_url && (
-            <img
-              src={account.avatar_url}
-              alt=""
-              className="welcome-avatar"
-            />
+            <img src={account.avatar_url} alt="" className="welcome-avatar" />
           )}
           <h1>Welcome, {displayName}</h1>
           <p className="welcome-subtitle">
-            You're all set. Here's everything you need to start building the trust layer for your AI agents.
+            You're all set. Here's everything you need to start building the trust layer for your AI
+            agents.
           </p>
         </div>
 
         {hasExistingKeys ? (
           <div className="welcome-key-card card">
             <h2>You already have API keys</h2>
-            <p className="welcome-key-warning">
-              Manage your keys from the dashboard.
-            </p>
+            <p className="welcome-key-warning">Manage your keys from the dashboard.</p>
             <button className="btn-primary" onClick={() => navigate('/keys')}>
               View API Keys
             </button>
@@ -134,9 +133,7 @@ export default function Welcome() {
                 {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
-            <p className="welcome-key-warning">
-              Save this key now — you won't see it again.
-            </p>
+            <p className="welcome-key-warning">Save this key now — you won't see it again.</p>
           </div>
         ) : error ? (
           <div className="welcome-key-card card">

@@ -63,19 +63,23 @@ const PLANS = [
 const FAQ = [
   {
     question: 'Can I change plans at any time?',
-    answer: 'Yes. Upgrades take effect immediately and you are billed pro-rata for the remainder of the billing cycle. Downgrades take effect at the start of the next cycle.',
+    answer:
+      'Yes. Upgrades take effect immediately and you are billed pro-rata for the remainder of the billing cycle. Downgrades take effect at the start of the next cycle.',
   },
   {
     question: 'What happens if I exceed my message quota?',
-    answer: 'You will receive a warning at 80% usage. At 100%, new messages are queued (not dropped) until the next billing cycle or until you upgrade.',
+    answer:
+      'You will receive a warning at 80% usage. At 100%, new messages are queued (not dropped) until the next billing cycle or until you upgrade.',
   },
   {
     question: 'Is there a free trial for Pro?',
-    answer: 'The Free tier is effectively your trial. You can explore all core features with generous limits before upgrading to Pro for higher volumes and federation.',
+    answer:
+      'The Free tier is effectively your trial. You can explore all core features with generous limits before upgrading to Pro for higher volumes and federation.',
   },
   {
     question: 'How does Enterprise pricing work?',
-    answer: 'Enterprise pricing is based on your organization\'s volume and requirements. Contact us at hello@skytale.sh and we will put together a custom proposal.',
+    answer:
+      "Enterprise pricing is based on your organization's volume and requirements. Contact us at hello@skytale.sh and we will put together a custom proposal.",
   },
 ];
 
@@ -107,7 +111,12 @@ export default function Pricing() {
     }
   }
 
-  if (loading) return <div className="page"><p className="loading">Loading plans...</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading plans...</p>
+      </div>
+    );
 
   return (
     <div className="page">
@@ -128,7 +137,9 @@ export default function Pricing() {
               key={plan.tier}
               className={`pricing-column card ${plan.featured ? 'featured' : ''} ${isCurrent ? 'current' : ''}`}
             >
-              {isCurrent && <span className="pricing-current-badge badge badge-pro">Your Plan</span>}
+              {isCurrent && (
+                <span className="pricing-current-badge badge badge-pro">Your Plan</span>
+              )}
               <div className="pricing-header">
                 <h2 className="pricing-tier-name">{plan.name}</h2>
                 <div className="pricing-price">
@@ -158,22 +169,26 @@ export default function Pricing() {
               </ul>
 
               <div className="pricing-cta">
-                {plan.tier === 'free' && (
-                  isCurrent ? (
-                    <button className="btn-ghost" disabled>Current Plan</button>
+                {plan.tier === 'free' &&
+                  (isCurrent ? (
+                    <button className="btn-ghost" disabled>
+                      Current Plan
+                    </button>
                   ) : (
-                    <button className="btn-ghost" disabled>Free Tier</button>
-                  )
-                )}
-                {plan.tier === 'pro' && (
-                  isCurrent ? (
-                    <button className="btn-primary" disabled>Current Plan</button>
+                    <button className="btn-ghost" disabled>
+                      Free Tier
+                    </button>
+                  ))}
+                {plan.tier === 'pro' &&
+                  (isCurrent ? (
+                    <button className="btn-primary" disabled>
+                      Current Plan
+                    </button>
                   ) : (
                     <button className="btn-primary" onClick={handleUpgrade} disabled={upgrading}>
                       {upgrading ? 'Redirecting...' : 'Upgrade to Pro'}
                     </button>
-                  )
-                )}
+                  ))}
                 {plan.tier === 'enterprise' && (
                   <a href="mailto:hello@skytale.sh" className="btn-ghost">
                     Contact Us

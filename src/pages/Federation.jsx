@@ -3,17 +3,8 @@
 
 import { useState, useEffect } from 'react';
 import { getFederationDirectory, createFederationInvite, getChannels } from '../api.js';
+import { truncateDid, truncate } from '../utils.js';
 import './Federation.css';
-
-function truncateDid(did) {
-  if (!did || did.length <= 24) return did;
-  return did.slice(0, 16) + '...' + did.slice(-4);
-}
-
-function truncateEndpoint(url) {
-  if (!url || url.length <= 40) return url;
-  return url.slice(0, 36) + '...';
-}
 
 export default function Federation() {
   // Directory state
@@ -40,6 +31,7 @@ export default function Federation() {
     getChannels()
       .then((data) => setChannels(data?.channels || []))
       .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function fetchDirectory(newOffset) {
@@ -142,13 +134,15 @@ export default function Federation() {
                 )}
                 {agent.endpoint && (
                   <span className="directory-agent-endpoint mono" title={agent.endpoint}>
-                    {truncateEndpoint(agent.endpoint)}
+                    {truncate(agent.endpoint, 40)}
                   </span>
                 )}
                 {agent.capabilities?.length > 0 && (
                   <div className="directory-agent-caps">
                     {agent.capabilities.map((cap) => (
-                      <span key={cap} className="badge badge-pro">{cap}</span>
+                      <span key={cap} className="badge badge-pro">
+                        {cap}
+                      </span>
                     ))}
                   </div>
                 )}
@@ -176,11 +170,14 @@ export default function Federation() {
             <p>Invite created. Share this token with the target organization.</p>
             <div className="new-key-row">
               <code>{inviteResult.token}</code>
-              <button className="btn-copy" onClick={() => {
-                navigator.clipboard.writeText(inviteResult.token);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              }}>
+              <button
+                className="btn-copy"
+                onClick={() => {
+                  navigator.clipboard.writeText(inviteResult.token);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+              >
                 {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
@@ -206,7 +203,9 @@ export default function Federation() {
               >
                 <option value="">Select a channel</option>
                 {channels.map((ch) => (
-                  <option key={ch.id} value={ch.name}>{ch.name}</option>
+                  <option key={ch.id} value={ch.name}>
+                    {ch.name}
+                  </option>
                 ))}
               </select>
             </div>

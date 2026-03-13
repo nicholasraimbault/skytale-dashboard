@@ -40,27 +40,27 @@
 @font-face {
   font-family: 'JetBrains Mono Fallback';
   src: local('Courier New');
-  ascent-override: 76.00%;
-  descent-override: 20.00%;
-  line-gap-override: 0.00%;
-  size-adjust: 110.00%;
+  ascent-override: 76%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 110%;
 }
 
 :root {
-  --bg: #0A0A0B;
+  --bg: #0a0a0b;
   --bg-surface: #141416;
-  --bg-elevated: #1A1A1D;
-  --border: #2A2A2F;
-  --text: #EDEDEF;
-  --text-muted: #A0A0A8;
-  --text-dim: #8A8A94;
+  --bg-elevated: #1a1a1d;
+  --border: #2a2a2f;
+  --text: #ededef;
+  --text-muted: #a0a0a8;
+  --text-dim: #8a8a94;
   --accent: #6b6fff;
   --accent-hover: #8588ff;
   --accent-text: #fff;
   --success: #7dd3a0;
   --warning: #c084fc;
   --error: #f87171;
-  --text-bright: #F8F8FA;
+  --text-bright: #f8f8fa;
   --font-sans: 'Epilogue', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', 'SF Mono', 'Fira Code', monospace;
 }
@@ -79,7 +79,9 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -92,7 +94,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a, button {
+a,
+button {
   -webkit-tap-highlight-color: transparent;
 }
 

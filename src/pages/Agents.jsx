@@ -3,28 +3,14 @@
 
 import { useState, useEffect } from 'react';
 import { getAgents, registerAgent, deleteAgent, updateAgent } from '../api.js';
+import { formatDate, truncateDid } from '../utils.js';
 import '../styles/pages.css';
-
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric',
-  });
-}
-
-function truncateDid(did) {
-  if (!did || did.length <= 24) return did;
-  return did.slice(0, 16) + '...' + did.slice(-4);
-}
 
 const VISIBILITY_OPTIONS = ['public', 'organization', 'private'];
 
 function VisibilityBadge({ visibility }) {
   const v = visibility || 'public';
-  return (
-    <span className={`visibility-badge visibility-${v}`}>
-      {v}
-    </span>
-  );
+  return <span className={`visibility-badge visibility-${v}`}>{v}</span>;
 }
 
 export default function Agents() {
@@ -34,11 +20,22 @@ export default function Agents() {
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [deletingDid, setDeletingDid] = useState(null);
-  const [form, setForm] = useState({ displayName: '', did: '', capabilities: '', endpoint: '', visibility: 'public' });
+  const [form, setForm] = useState({
+    displayName: '',
+    did: '',
+    capabilities: '',
+    endpoint: '',
+    visibility: 'public',
+  });
 
   // Edit state
   const [editingDid, setEditingDid] = useState(null);
-  const [editForm, setEditForm] = useState({ displayName: '', capabilities: '', endpoint: '', visibility: 'public' });
+  const [editForm, setEditForm] = useState({
+    displayName: '',
+    capabilities: '',
+    endpoint: '',
+    visibility: 'public',
+  });
   const [saving, setSaving] = useState(false);
 
   // Filter state
@@ -56,7 +53,9 @@ export default function Agents() {
     }
   }
 
-  useEffect(() => { fetchAgents(); }, []);
+  useEffect(() => {
+    fetchAgents();
+  }, []);
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -64,7 +63,10 @@ export default function Agents() {
     setCreating(true);
     setError(null);
     try {
-      const caps = form.capabilities.split(',').map(c => c.trim()).filter(Boolean);
+      const caps = form.capabilities
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
       await registerAgent({
         did: form.did.trim(),
         display_name: form.displayName.trim() || undefined,
@@ -116,7 +118,10 @@ export default function Agents() {
     setSaving(true);
     setError(null);
     try {
-      const caps = editForm.capabilities.split(',').map(c => c.trim()).filter(Boolean);
+      const caps = editForm.capabilities
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
       await updateAgent(editingDid, {
         display_name: editForm.displayName.trim() || undefined,
         capabilities: caps.length ? caps : undefined,
@@ -136,9 +141,7 @@ export default function Agents() {
   const filteredAgents = agents.filter((agent) => {
     if (capabilityFilter.trim()) {
       const filterLower = capabilityFilter.trim().toLowerCase();
-      const hasCap = (agent.capabilities || []).some(
-        (c) => c.toLowerCase().includes(filterLower)
-      );
+      const hasCap = (agent.capabilities || []).some((c) => c.toLowerCase().includes(filterLower));
       if (!hasCap) return false;
     }
     if (didFilter.trim()) {
@@ -147,7 +150,12 @@ export default function Agents() {
     return true;
   });
 
-  if (loading) return <div className="page"><p className="loading">Loading agents...</p></div>;
+  if (loading)
+    return (
+      <div className="page">
+        <p className="loading">Loading agents...</p>
+      </div>
+    );
 
   return (
     <div className="page">
@@ -157,23 +165,42 @@ export default function Agents() {
           <p>Your registered agent identities.</p>
         </div>
         {!showForm && (
-          <button className="btn-primary" onClick={() => setShowForm(true)}>Register</button>
+          <button className="btn-primary" onClick={() => setShowForm(true)}>
+            Register
+          </button>
         )}
       </div>
 
       {showForm && (
         <form className="agent-register-form card" onSubmit={handleRegister}>
           <div className="agent-form-row">
-            <input className="input" placeholder="Display name" value={form.displayName}
-              onChange={(e) => setForm({ ...form, displayName: e.target.value })} />
-            <input className="input" placeholder="DID (did:key:z6Mk...)" value={form.did}
-              onChange={(e) => setForm({ ...form, did: e.target.value })} required />
+            <input
+              className="input"
+              placeholder="Display name"
+              value={form.displayName}
+              onChange={(e) => setForm({ ...form, displayName: e.target.value })}
+            />
+            <input
+              className="input"
+              placeholder="DID (did:key:z6Mk...)"
+              value={form.did}
+              onChange={(e) => setForm({ ...form, did: e.target.value })}
+              required
+            />
           </div>
           <div className="agent-form-row">
-            <input className="input" placeholder="Capabilities (comma-separated)" value={form.capabilities}
-              onChange={(e) => setForm({ ...form, capabilities: e.target.value })} />
-            <input className="input" placeholder="Endpoint URL (optional)" value={form.endpoint}
-              onChange={(e) => setForm({ ...form, endpoint: e.target.value })} />
+            <input
+              className="input"
+              placeholder="Capabilities (comma-separated)"
+              value={form.capabilities}
+              onChange={(e) => setForm({ ...form, capabilities: e.target.value })}
+            />
+            <input
+              className="input"
+              placeholder="Endpoint URL (optional)"
+              value={form.endpoint}
+              onChange={(e) => setForm({ ...form, endpoint: e.target.value })}
+            />
           </div>
           <div className="agent-form-row">
             <select
@@ -183,7 +210,9 @@ export default function Agents() {
               style={{ maxWidth: '200px' }}
             >
               {VISIBILITY_OPTIONS.map((v) => (
-                <option key={v} value={v}>{v.charAt(0).toUpperCase() + v.slice(1)}</option>
+                <option key={v} value={v}>
+                  {v.charAt(0).toUpperCase() + v.slice(1)}
+                </option>
               ))}
             </select>
           </div>
@@ -191,7 +220,9 @@ export default function Agents() {
             <button type="submit" className="btn-primary" disabled={creating}>
               {creating ? 'Registering...' : 'Register'}
             </button>
-            <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+            <button type="button" className="btn-ghost" onClick={() => setShowForm(false)}>
+              Cancel
+            </button>
           </div>
         </form>
       )}
@@ -229,14 +260,26 @@ export default function Agents() {
               {editingDid === agent.did ? (
                 <form onSubmit={handleSaveEdit} style={{ width: '100%' }}>
                   <div className="agent-form-row">
-                    <input className="input" placeholder="Display name" value={editForm.displayName}
-                      onChange={(e) => setEditForm({ ...editForm, displayName: e.target.value })} />
-                    <input className="input" placeholder="Capabilities (comma-separated)" value={editForm.capabilities}
-                      onChange={(e) => setEditForm({ ...editForm, capabilities: e.target.value })} />
+                    <input
+                      className="input"
+                      placeholder="Display name"
+                      value={editForm.displayName}
+                      onChange={(e) => setEditForm({ ...editForm, displayName: e.target.value })}
+                    />
+                    <input
+                      className="input"
+                      placeholder="Capabilities (comma-separated)"
+                      value={editForm.capabilities}
+                      onChange={(e) => setEditForm({ ...editForm, capabilities: e.target.value })}
+                    />
                   </div>
                   <div className="agent-form-row">
-                    <input className="input" placeholder="Endpoint URL" value={editForm.endpoint}
-                      onChange={(e) => setEditForm({ ...editForm, endpoint: e.target.value })} />
+                    <input
+                      className="input"
+                      placeholder="Endpoint URL"
+                      value={editForm.endpoint}
+                      onChange={(e) => setEditForm({ ...editForm, endpoint: e.target.value })}
+                    />
                     <select
                       className="input"
                       value={editForm.visibility}
@@ -244,7 +287,9 @@ export default function Agents() {
                       style={{ maxWidth: '200px' }}
                     >
                       {VISIBILITY_OPTIONS.map((v) => (
-                        <option key={v} value={v}>{v.charAt(0).toUpperCase() + v.slice(1)}</option>
+                        <option key={v} value={v}>
+                          {v.charAt(0).toUpperCase() + v.slice(1)}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -252,7 +297,9 @@ export default function Agents() {
                     <button type="submit" className="btn-primary" disabled={saving}>
                       {saving ? 'Saving...' : 'Save'}
                     </button>
-                    <button type="button" className="btn-ghost" onClick={cancelEdit}>Cancel</button>
+                    <button type="button" className="btn-ghost" onClick={cancelEdit}>
+                      Cancel
+                    </button>
                   </div>
                 </form>
               ) : (
@@ -260,8 +307,9 @@ export default function Agents() {
                   <div className="key-info">
                     <span className="key-name">
                       {agent.display_name || truncateDid(agent.did)}
-                      <span className={`agent-status ${agent.status === 'active' ? 'active' : ''}`}></span>
-                      {' '}
+                      <span
+                        className={`agent-status ${agent.status === 'active' ? 'active' : ''}`}
+                      ></span>{' '}
                       <VisibilityBadge visibility={agent.visibility} />
                     </span>
                     <span className="key-prefix">{truncateDid(agent.did)}</span>

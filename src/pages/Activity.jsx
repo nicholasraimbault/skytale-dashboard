@@ -3,19 +3,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getActivityLog } from '../api.js';
+import { timeAgo } from '../utils.js';
 import '../styles/activity.css';
-
-function relativeTime(iso) {
-  const diff = Date.now() - new Date(iso).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString();
-}
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -122,20 +111,18 @@ export default function Activity() {
             const config = CATEGORY_CONFIG[category];
             return (
               <div key={event.id || i} className="activity-event">
-                <div className={`activity-event-icon ${config.className}`}>
-                  {config.icon}
-                </div>
+                <div className={`activity-event-icon ${config.className}`}>{config.icon}</div>
                 <div className="activity-event-content">
-                  <span className="activity-event-action">{event.action || event.description || 'Event'}</span>
-                  {event.actor && (
-                    <span className="activity-event-actor mono">{event.actor}</span>
-                  )}
+                  <span className="activity-event-action">
+                    {event.action || event.description || 'Event'}
+                  </span>
+                  {event.actor && <span className="activity-event-actor mono">{event.actor}</span>}
                   {event.resource && (
                     <span className="activity-event-resource mono">{event.resource}</span>
                   )}
                 </div>
                 <div className="activity-event-time">
-                  {event.created_at ? relativeTime(event.created_at) : ''}
+                  {event.created_at ? timeAgo(event.created_at) : ''}
                 </div>
               </div>
             );

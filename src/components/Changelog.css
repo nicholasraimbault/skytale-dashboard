@@ -12,7 +12,9 @@
   cursor: pointer;
   padding: 0.375rem;
   border-radius: 8px;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
 
 .changelog-trigger:hover {
@@ -78,7 +80,9 @@
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 6px;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
 
 .changelog-close:hover {

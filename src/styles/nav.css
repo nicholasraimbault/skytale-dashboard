@@ -203,8 +203,9 @@
   height: 2px;
   background: var(--text-muted);
   border-radius: 1px;
-  transition: transform 0.29s cubic-bezier(0.25, 0.1, 0.25, 1),
-              opacity 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition:
+    transform 0.29s cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .nav-mobile-bar.open .nav-hamburger span:nth-child(1) {
@@ -294,9 +295,10 @@
     opacity: 0;
     filter: blur(4px);
     transform: translateY(12px) scale(0.96);
-    transition: opacity 0.29s cubic-bezier(0.25, 0.1, 0.25, 1),
-                filter 0.29s cubic-bezier(0.25, 0.1, 0.25, 1),
-                transform 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition:
+      opacity 0.29s cubic-bezier(0.25, 0.1, 0.25, 1),
+      filter 0.29s cubic-bezier(0.25, 0.1, 0.25, 1),
+      transform 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   .nav-mobile-bar.open .nav-mobile {
