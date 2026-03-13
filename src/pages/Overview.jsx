@@ -4,8 +4,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { getUsage, getKeys, getAgents, getChannels, getRevocations, getWebhooks } from '../api.js';
-import { timeAgo, healthDotClass, formatNumber } from '../utils.js';
+import {
+  getUsage,
+  getKeys,
+  getAgents,
+  getChannels,
+  getRevocations,
+  getWebhooks,
+  getActivityLog,
+} from '../api.js';
+import { timeAgo, healthDotClass, formatNumber, truncateDid } from '../utils.js';
 import '../styles/pages.css';
 
 const PLAN_BADGES = {
@@ -114,40 +122,90 @@ export default function Overview() {
       return [];
     }
   });
+  const [securityEvents, setSecurityEvents] = useState([]);
+  const [whatsNextDismissed, setWhatsNextDismissed] = useState(
+    () => localStorage.getItem('skytale_whats_next_dismissed') === 'true',
+  );
   const [activeTab, setActiveTab] = useState('generic');
   const [codeCopied, setCodeCopied] = useState(false);
 
-  useEffect(() => {
-    Promise.all([
+  function loadDashboardData() {
+    return Promise.all([
       getUsage().catch(() => null),
       getKeys().catch(() => ({ keys: [] })),
       getAgents().catch(() => ({ agents: [] })),
       getChannels().catch(() => ({ channels: [] })),
       getRevocations().catch(() => []),
       getWebhooks().catch(() => []),
-    ])
-      .then(([usageData, keysData, agentsData, channelsData, revocationsData, webhooksData]) => {
+      getActivityLog({ limit: 5, filter: 'security' }).catch(() => ({ entries: [] })),
+    ]).then(
+      ([
+        usageData,
+        keysData,
+        agentsData,
+        channelsData,
+        revocationsData,
+        webhooksData,
+        activityData,
+      ]) => {
         setUsage(usageData);
         setKeys(keysData?.keys || []);
         setAgents(agentsData?.agents || []);
         setChannels(channelsData?.channels || []);
         setRevocations(Array.isArray(revocationsData) ? revocationsData : []);
         setWebhooks(Array.isArray(webhooksData) ? webhooksData : []);
-      })
+        setSecurityEvents(activityData?.entries || []);
+      },
+    );
+  }
+
+  function fetchDashboard() {
+    setLoading(true);
+    setError(null);
+    loadDashboardData()
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    loadDashboardData()
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading)
     return (
-      <div className="page">
-        <p className="loading">Loading dashboard...</p>
-      </div>
+      <main className="page" id="main-content">
+        <h1 className="page-title">Overview</h1>
+        <p className="page-subtitle">Trust command center for your Skytale deployment.</p>
+        <div className="skeleton skeleton-card" style={{ height: '12rem' }} />
+        <div className="grid-3 overview-stats" style={{ marginBottom: '1.5rem' }}>
+          <div className="skeleton skeleton-card" />
+          <div className="skeleton skeleton-card" />
+          <div className="skeleton skeleton-card" />
+        </div>
+        <div className="skeleton skeleton-chart" />
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '0.75rem',
+            marginTop: '2rem',
+          }}
+        >
+          <div className="skeleton skeleton-card" />
+          <div className="skeleton skeleton-card" />
+          <div className="skeleton skeleton-card" />
+        </div>
+      </main>
     );
   if (error && !usage)
     return (
       <div className="page">
         <p className="error-msg">{error}</p>
+        <button className="btn-primary" onClick={fetchDashboard} style={{ marginTop: '1rem' }}>
+          Retry
+        </button>
       </div>
     );
 
@@ -283,6 +341,11 @@ export default function Overview() {
             <Link to="/agents" className="trust-card-link">
               View details
             </Link>
+            <div className="trust-card-detail">
+              {agents.length > 0
+                ? `${activeAgents} of ${agents.length} agent${agents.length !== 1 ? 's' : ''} active`
+                : 'No agents registered'}
+            </div>
           </div>
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(encryptionScore)}`}>
@@ -292,6 +355,11 @@ export default function Overview() {
             <Link to="/channels" className="trust-card-link">
               View details
             </Link>
+            <div className="trust-card-detail">
+              {channels.length > 0
+                ? `${channels.length} encrypted channel${channels.length !== 1 ? 's' : ''}`
+                : 'No channels \u2014 create one'}
+            </div>
           </div>
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(governanceScore)}`}>
@@ -301,6 +369,15 @@ export default function Overview() {
             <Link to="/keys" className="trust-card-link">
               View details
             </Link>
+            <div className="trust-card-detail">
+              {[
+                allKeysRecent ? 'Keys fresh' : 'Keys stale',
+                hasRevocationWebhook ? 'Revocation alerts on' : null,
+                hasAuditWebhook ? 'Audit alerts on' : null,
+              ]
+                .filter(Boolean)
+                .join(' \u00B7 ') || 'No webhooks configured'}
+            </div>
           </div>
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(complianceScore)}`}>
@@ -310,6 +387,7 @@ export default function Overview() {
             <Link to="/account" className="trust-card-link">
               View details
             </Link>
+            <div className="trust-card-detail">Composite of identity, encryption, governance</div>
           </div>
         </div>
       </div>
@@ -545,6 +623,75 @@ export default function Overview() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Security Events */}
+      <div className="card" style={{ marginTop: '2rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+          }}
+        >
+          <h2 className="section-heading" style={{ marginBottom: 0 }}>
+            Recent Security Events
+          </h2>
+          <Link to="/activity" style={{ fontSize: '0.8125rem' }}>
+            View all &rarr;
+          </Link>
+        </div>
+        {securityEvents.length === 0 ? (
+          <p className="empty-state" style={{ padding: '1rem 0' }}>
+            No security events recorded
+          </p>
+        ) : (
+          <div className="security-events-list">
+            {securityEvents.map((ev, i) => (
+              <div key={ev.id || i} className="security-event-row">
+                <span className="security-event-action">{ev.action || 'Event'}</span>
+                {ev.actor && <span className="security-event-actor">{truncateDid(ev.actor)}</span>}
+                <span className="security-event-time">
+                  {ev.created_at ? timeAgo(ev.created_at) : ''}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* What's Next? */}
+      {(checklistDismissed || allChecklistDone) && !whatsNextDismissed && (
+        <div className="card whats-next-section" style={{ marginTop: '2rem' }}>
+          <div className="whats-next-header">
+            <h2>What&apos;s Next?</h2>
+            <button
+              className="trust-action-dismiss"
+              onClick={() => {
+                setWhatsNextDismissed(true);
+                localStorage.setItem('skytale_whats_next_dismissed', 'true');
+              }}
+              aria-label="Dismiss suggestions"
+            >
+              &#x2715;
+            </button>
+          </div>
+          <div className="whats-next-grid">
+            <Link to="/security" className="card whats-next-item">
+              Set up webhooks
+            </Link>
+            <Link to="/settings" className="card whats-next-item">
+              Configure org domain
+            </Link>
+            <Link to="/team" className="card whats-next-item">
+              Invite team member
+            </Link>
+            <Link to="/compliance" className="card whats-next-item">
+              Review compliance
+            </Link>
           </div>
         </div>
       )}
