@@ -105,6 +105,7 @@ describe('CommandPalette', () => {
   });
 
   it('ArrowUp from first item wraps to last', () => {
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => {});
     renderPalette();
     openPalette();
 
@@ -112,8 +113,9 @@ describe('CommandPalette', () => {
     fireEvent.keyDown(dialog, { key: 'ArrowUp' });
     fireEvent.keyDown(dialog, { key: 'Enter' });
 
-    // Last action is "Create API key" with path "/keys"
-    expect(mockedNavigate).toHaveBeenCalledWith('/keys');
+    // Last action is "View system status" (external link)
+    expect(openSpy).toHaveBeenCalledWith('https://status.skytale.sh', '_blank');
+    openSpy.mockRestore();
   });
 
   it('has accessible search label', () => {

@@ -135,6 +135,23 @@ export default function Playground() {
     return 'status-server-error';
   }
 
+  function explainStatus(code) {
+    switch (code) {
+      case 401:
+        return 'Unauthorized — check your API key';
+      case 403:
+        return 'Forbidden — insufficient permissions';
+      case 404:
+        return 'Not found — the resource may not exist';
+      case 429:
+        return 'Rate limited — wait and retry';
+      case 500:
+        return 'Server error — check status.skytale.sh';
+      default:
+        return code >= 400 ? 'Request failed' : '';
+    }
+  }
+
   return (
     <main className="page playground-page" id="main-content">
       <h1 className="page-title">API Playground</h1>
@@ -218,6 +235,9 @@ export default function Playground() {
                   {timing !== null && <span className="playground-timing">{timing}ms</span>}
                 </div>
               </div>
+              {status !== null && explainStatus(status) && (
+                <p className="playground-status-hint">{explainStatus(status)}</p>
+              )}
               <pre className="playground-response-body mono">
                 <code>{response}</code>
               </pre>

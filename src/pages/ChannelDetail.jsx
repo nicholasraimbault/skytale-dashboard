@@ -21,22 +21,26 @@ export default function ChannelDetail() {
   const [inviteToken, setInviteToken] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const ch = await getChannel(id);
-        setChannel(ch);
-        if (ch?.name) {
-          const joins = await getPendingJoins(ch.name);
-          setPendingJoins(joins?.requests || []);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  async function fetchData() {
+    setLoading(true);
+    setError(null);
+    try {
+      const ch = await getChannel(id);
+      setChannel(ch);
+      if (ch?.name) {
+        const joins = await getPendingJoins(ch.name);
+        setPendingJoins(joins?.requests || []);
       }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   async function handleCreateInvite(e) {
@@ -68,7 +72,12 @@ export default function ChannelDetail() {
   if (error && !channel)
     return (
       <div className="page">
-        <p className="error-msg">{error}</p>
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchData}>
+            Retry
+          </button>
+        </p>
       </div>
     );
 
@@ -97,7 +106,14 @@ export default function ChannelDetail() {
         )}
       </div>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && (
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchData}>
+            Retry
+          </button>
+        </p>
+      )}
 
       {inviteToken && (
         <div className="new-key-banner">

@@ -15,10 +15,22 @@ const ACTIONS = [
   { name: 'Account', path: '/account', section: 'Navigate' },
   { name: 'Federation', path: '/federation', section: 'Navigate' },
   { name: 'Pricing', path: '/pricing', section: 'Navigate' },
+  { name: 'Compliance', path: '/compliance', section: 'Navigate' },
+  { name: 'Settings', path: '/settings', section: 'Navigate' },
+  { name: 'Activity', path: '/activity', section: 'Navigate' },
+  { name: 'Team', path: '/team', section: 'Navigate' },
+  { name: 'Playground', path: '/playground', section: 'Navigate' },
   { name: 'Revoke agent', path: '/security', section: 'Actions' },
   { name: 'Create webhook', path: '/security', section: 'Actions' },
   { name: 'Register agent', path: '/agents', section: 'Actions' },
   { name: 'Create API key', path: '/keys', section: 'Actions' },
+  { name: 'Export compliance report', path: '/compliance', section: 'Actions' },
+  {
+    name: 'View system status',
+    path: 'https://status.skytale.sh',
+    section: 'Actions',
+    external: true,
+  },
 ];
 
 export default function CommandPalette() {
@@ -73,7 +85,11 @@ export default function CommandPalette() {
   const selectItem = useCallback(
     (item) => {
       close();
-      navigate(item.path);
+      if (item.external) {
+        window.open(item.path, '_blank');
+      } else {
+        navigate(item.path);
+      }
     },
     [close, navigate],
   );

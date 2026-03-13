@@ -141,7 +141,14 @@ export default function Keys() {
         </button>
       </form>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && (
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchKeys}>
+            Retry
+          </button>
+        </p>
+      )}
 
       <div className="key-list">
         {keys.length === 0 ? (

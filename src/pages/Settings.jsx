@@ -9,6 +9,8 @@ import {
   getAgents,
   getChannels,
   getAuditEntries,
+  getKeys,
+  revokeKey,
 } from '../api.js';
 import '../styles/settings.css';
 
@@ -16,6 +18,7 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [revokingAll, setRevokingAll] = useState(false);
   const [toast, setToast] = useState(null);
   const [settings, setSettings] = useState({
     webhook_url: '',
@@ -27,20 +30,23 @@ export default function Settings() {
     did_web: '',
   });
 
-  useEffect(() => {
-    async function fetchSettings() {
-      try {
-        const data = await getSettings();
-        if (data) {
-          setSettings((prev) => ({ ...prev, ...data }));
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  async function fetchSettingsData() {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getSettings();
+      if (data) {
+        setSettings((prev) => ({ ...prev, ...data }));
       }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    fetchSettings();
+  }
+
+  useEffect(() => {
+    fetchSettingsData();
   }, []);
 
   const showToast = useCallback((message, type = 'success') => {
@@ -144,10 +150,36 @@ export default function Settings() {
     showToast('Coming soon — account deletion is not yet available', 'info');
   }
 
-  function handleRevokeAllKeys() {
-    if (!window.confirm('Revoke all API keys? All existing integrations will stop working.'))
-      return;
-    showToast('Coming soon — bulk key revocation is not yet available', 'info');
+  async function handleRevokeAllKeys() {
+    setRevokingAll(true);
+    try {
+      const data = await getKeys();
+      const keys = data?.keys || [];
+      if (keys.length === 0) {
+        showToast('No API keys to revoke', 'info');
+        setRevokingAll(false);
+        return;
+      }
+      if (
+        !window.confirm(
+          `Revoke all ${keys.length} key${keys.length === 1 ? '' : 's'}? All integrations will stop working.`,
+        )
+      ) {
+        setRevokingAll(false);
+        return;
+      }
+      let revoked = 0;
+      for (const key of keys) {
+        await revokeKey(key.id);
+        revoked++;
+        showToast(`Revoking keys... ${revoked}/${keys.length}`, 'info');
+      }
+      showToast(`All ${revoked} key${revoked === 1 ? '' : 's'} revoked`, 'success');
+    } catch (err) {
+      showToast(`Failed to revoke keys: ${err.message}`, 'error');
+    } finally {
+      setRevokingAll(false);
+    }
   }
 
   if (loading) {
@@ -167,7 +199,14 @@ export default function Settings() {
         <div className={`settings-toast settings-toast-${toast.type}`}>{toast.message}</div>
       )}
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && (
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchSettingsData}>
+            Retry
+          </button>
+        </p>
+      )}
 
       {/* Notifications */}
       <div className="card settings-section">
@@ -300,8 +339,8 @@ export default function Settings() {
                 Revoke every API key. All integrations will immediately lose access.
               </p>
             </div>
-            <button className="btn-danger" onClick={handleRevokeAllKeys}>
-              Revoke All Keys
+            <button className="btn-danger" onClick={handleRevokeAllKeys} disabled={revokingAll}>
+              {revokingAll ? 'Revoking...' : 'Revoke All Keys'}
             </button>
           </div>
         </div>

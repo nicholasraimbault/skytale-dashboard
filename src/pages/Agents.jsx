@@ -267,7 +267,14 @@ export default function Agents() {
         />
       </div>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && (
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchAgents}>
+            Retry
+          </button>
+        </p>
+      )}
 
       <div className="key-list">
         {filteredAgents.length === 0 ? (

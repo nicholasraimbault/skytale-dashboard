@@ -121,7 +121,14 @@ export default function Federation() {
           </button>
         </form>
 
-        {dirError && <p className="error-msg">{dirError}</p>}
+        {dirError && (
+          <p className="error-msg">
+            {dirError}{' '}
+            <button className="btn-ghost" onClick={() => fetchDirectory(0)}>
+              Retry
+            </button>
+          </p>
+        )}
 
         <div className="directory-results">
           {agents.length === 0 && !dirLoading ? (
@@ -198,7 +205,14 @@ export default function Federation() {
           </div>
         )}
 
-        {inviteError && <p className="error-msg">{inviteError}</p>}
+        {inviteError && (
+          <p className="error-msg">
+            {inviteError}{' '}
+            <button className="btn-ghost" onClick={handleCreateInvite}>
+              Retry
+            </button>
+          </p>
+        )}
 
         <form className="federation-invite-form" onSubmit={handleCreateInvite}>
           <div className="federation-invite-fields">

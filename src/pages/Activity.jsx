@@ -100,7 +100,14 @@ export default function Activity() {
         ))}
       </div>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && (
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={() => fetchEvents(filter, 0)}>
+            Retry
+          </button>
+        </p>
+      )}
 
       {loading ? (
         <div className="loading">Loading activity...</div>

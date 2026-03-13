@@ -2,6 +2,7 @@
 // See LICENSE for details.
 
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 import { getKeys, getChannels, getAgents, getRevocations, getUsage } from '../api.js';
 import '../styles/compliance.css';
 
@@ -14,6 +15,7 @@ const STATIC_SECTIONS = [
     id: 'risk',
     title: 'Risk Management',
     article: 'Art. 9',
+    type: 'built-in',
     items: [
       { label: 'MLS RFC 9420 key management', ok: true },
       { label: 'Forward secrecy via continuous key updates', ok: true },
@@ -24,6 +26,7 @@ const STATIC_SECTIONS = [
     id: 'governance',
     title: 'Data Governance',
     article: 'Art. 10',
+    type: 'built-in',
     items: [
       { label: 'Zero-knowledge relay — no plaintext access', ok: true },
       { label: 'No plaintext logging at any layer', ok: true },
@@ -34,6 +37,7 @@ const STATIC_SECTIONS = [
     id: 'documentation',
     title: 'Technical Documentation',
     article: 'Art. 11',
+    type: 'built-in',
     items: [
       { label: 'MLS RFC 9420 encryption protocol', ok: true },
       { label: 'CBOR serialization for wire protocol', ok: true },
@@ -53,29 +57,32 @@ export default function Compliance() {
     usage: null,
   });
 
-  useEffect(() => {
-    async function fetchAll() {
-      try {
-        const [channelsRes, agentsRes, keysRes, revocationsRes, usageRes] = await Promise.all([
-          getChannels().catch(() => ({ channels: [] })),
-          getAgents().catch(() => ({ agents: [] })),
-          getKeys().catch(() => ({ keys: [] })),
-          getRevocations().catch(() => ({ revocations: [] })),
-          getUsage().catch(() => null),
-        ]);
-        setData({
-          channels: channelsRes?.channels || [],
-          agents: agentsRes?.agents || [],
-          keys: keysRes?.keys || [],
-          revocations: revocationsRes?.revocations || [],
-          usage: usageRes,
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchAll() {
+    setLoading(true);
+    setError(null);
+    try {
+      const [channelsRes, agentsRes, keysRes, revocationsRes, usageRes] = await Promise.all([
+        getChannels().catch(() => ({ channels: [] })),
+        getAgents().catch(() => ({ agents: [] })),
+        getKeys().catch(() => ({ keys: [] })),
+        getRevocations().catch(() => ({ revocations: [] })),
+        getUsage().catch(() => null),
+      ]);
+      setData({
+        channels: channelsRes?.channels || [],
+        agents: agentsRes?.agents || [],
+        keys: keysRes?.keys || [],
+        revocations: revocationsRes?.revocations || [],
+        usage: usageRes,
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchAll();
   }, []);
 
@@ -91,7 +98,12 @@ export default function Compliance() {
     return (
       <main className="page" id="main-content">
         <h1 className="page-title">Compliance</h1>
-        <p className="error-msg">{error}</p>
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchAll}>
+            Retry
+          </button>
+        </p>
       </main>
     );
   }
@@ -110,6 +122,8 @@ export default function Compliance() {
       id: 'records',
       title: 'Record-Keeping',
       article: 'Art. 12',
+      type: 'configurable',
+      link: '/channels',
       items: [
         {
           label: `${data.channels.length} channel(s) with audit trail support`,
@@ -123,6 +137,8 @@ export default function Compliance() {
       id: 'transparency',
       title: 'Transparency',
       article: 'Art. 13',
+      type: 'configurable',
+      link: '/agents',
       items: [
         { label: `${data.agents.length} registered agent(s)`, ok: data.agents.length > 0 },
         {
@@ -136,6 +152,8 @@ export default function Compliance() {
       id: 'cybersecurity',
       title: 'Cybersecurity',
       article: 'Art. 15',
+      type: 'configurable',
+      link: '/keys',
       items: [
         {
           label: `${data.channels.length} encrypted channel(s) active`,
@@ -181,30 +199,52 @@ export default function Compliance() {
       </div>
 
       <div className="compliance-sections">
-        {allSections.map((section) => (
-          <div key={section.id} className="card compliance-section">
-            <div className="compliance-section-header">
-              <h3 className="compliance-section-title">{section.title}</h3>
-              <span className="compliance-article-badge">{section.article}</span>
+        {allSections.map((section) => {
+          const isBuiltIn = section.type === 'built-in';
+          const sectionContent = (
+            <div key={section.id} className="card compliance-section">
+              <div className="compliance-section-header">
+                <div className="compliance-section-title-row">
+                  <h3 className="compliance-section-title">{section.title}</h3>
+                  <span
+                    className={`compliance-badge ${isBuiltIn ? 'compliance-badge--built-in' : 'compliance-badge--configurable'}`}
+                  >
+                    {isBuiltIn ? 'Built-in' : 'Configurable'}
+                  </span>
+                </div>
+                <span className="compliance-article-badge">{section.article}</span>
+              </div>
+              {isBuiltIn && (
+                <p className="compliance-built-in-subtext">Handled by Skytale infrastructure</p>
+              )}
+              <ul className="compliance-checklist">
+                {section.items.map((item, i) => (
+                  <li key={i} className="compliance-check-item">
+                    <span
+                      className={`compliance-check-icon ${item.ok ? (item.warn ? 'warn' : 'pass') : 'fail'}`}
+                    >
+                      {item.ok ? (item.warn ? '!' : '\u2713') : '\u2717'}
+                    </span>
+                    <span
+                      className={`compliance-check-label ${item.warn ? 'compliance-warn-text' : ''}`}
+                    >
+                      {item.label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="compliance-checklist">
-              {section.items.map((item, i) => (
-                <li key={i} className="compliance-check-item">
-                  <span
-                    className={`compliance-check-icon ${item.ok ? (item.warn ? 'warn' : 'pass') : 'fail'}`}
-                  >
-                    {item.ok ? (item.warn ? '!' : '\u2713') : '\u2717'}
-                  </span>
-                  <span
-                    className={`compliance-check-label ${item.warn ? 'compliance-warn-text' : ''}`}
-                  >
-                    {item.label}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+          );
+
+          if (!isBuiltIn && section.link) {
+            return (
+              <Link key={section.id} to={section.link} className="compliance-section-link">
+                {sectionContent}
+              </Link>
+            );
+          }
+          return sectionContent;
+        })}
       </div>
     </main>
   );

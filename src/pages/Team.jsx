@@ -37,24 +37,32 @@ export default function Team() {
   const [resendingId, setResendingId] = useState(null);
   const [revokingId, setRevokingId] = useState(null);
 
-  useEffect(() => {
-    getAccount()
-      .then((acct) => {
-        setAccount(acct);
-        if (acct.org_id) {
-          return Promise.all([
-            getTeamMembers(acct.org_id),
-            getTeamInvites(acct.org_id).catch(() => []),
-          ]);
-        }
-        return [[], []];
-      })
-      .then(([m, i]) => {
+  async function fetchTeam() {
+    setLoading(true);
+    setError(null);
+    try {
+      const acct = await getAccount();
+      setAccount(acct);
+      if (acct.org_id) {
+        const [m, i] = await Promise.all([
+          getTeamMembers(acct.org_id),
+          getTeamInvites(acct.org_id).catch(() => []),
+        ]);
         setMembers(m || []);
         setInvites(i || []);
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      } else {
+        setMembers([]);
+        setInvites([]);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchTeam();
   }, []);
 
   const isAdmin = members.some((m) => m.account_id === account?.id && m.role === 'admin');
@@ -146,7 +154,12 @@ export default function Team() {
   if (error && !account)
     return (
       <main className="page" id="main-content">
-        <p className="error-msg">{error}</p>
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchTeam}>
+            Retry
+          </button>
+        </p>
       </main>
     );
 
@@ -169,7 +182,14 @@ export default function Team() {
       <h1 className="page-title">Team</h1>
       <p className="page-subtitle">Manage your team members and roles.</p>
 
-      {error && <p className="error-msg">{error}</p>}
+      {error && (
+        <p className="error-msg">
+          {error}{' '}
+          <button className="btn-ghost" onClick={fetchTeam}>
+            Retry
+          </button>
+        </p>
+      )}
 
       {/* Invite Form (admin only) */}
       {isAdmin && (
