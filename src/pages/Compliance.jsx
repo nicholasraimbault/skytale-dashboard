@@ -599,7 +599,9 @@ export default function Compliance() {
     },
   ];
 
-  const passingSections = assessmentSections.filter((s) => s.items.every((item) => item.ok)).length;
+  const passingSections = assessmentSections.filter((s) =>
+    s.items.every((item) => item.ok && !item.warn),
+  ).length;
   const readiness = Math.round((passingSections / assessmentSections.length) * 100);
 
   // --- Control matrix statuses ---
