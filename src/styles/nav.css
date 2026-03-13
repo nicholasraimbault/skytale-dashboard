@@ -34,8 +34,9 @@ nav {
 }
 
 .nav-brand {
+  font-family: 'Rethink Sans', sans-serif;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--text);
   letter-spacing: -0.02em;
 }

@@ -8,7 +8,7 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <h1>skytale<span>.</span></h1>
+          <h1><strong>sky</strong>tale<strong><span>.</span></strong></h1>
         </div>
         <p className="login-subtitle">
           Sign in to access the dashboard.

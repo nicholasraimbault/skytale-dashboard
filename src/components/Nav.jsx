@@ -137,7 +137,7 @@ export default function Nav({ onLogout }) {
       <div className="nav-glass" ref={glassRef}></div>
       <div className="nav-inner">
         <div className="nav-brand">
-          skytale<span>.</span>
+          <strong>sky</strong>tale<strong><span>.</span></strong>
         </div>
 
         <button
