@@ -1,0 +1,175 @@
+/* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
+/* See LICENSE for details. */
+
+.channel-detail-back {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  transition: color 0.15s;
+}
+
+.channel-detail-back:hover {
+  color: var(--accent);
+}
+
+.channel-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.channel-detail-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.channel-detail-title h1 {
+  font-size: clamp(1.4rem, 2.2vw + 0.5rem, 1.75rem);
+  font-weight: 700;
+}
+
+.channel-health-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.channel-health-dot.green {
+  background: var(--success);
+  box-shadow: 0 0 6px rgba(125, 211, 160, 0.5);
+}
+
+.channel-health-dot.amber {
+  background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+}
+
+.channel-health-dot.red {
+  background: var(--error);
+  box-shadow: 0 0 6px rgba(248, 113, 113, 0.5);
+}
+
+.channel-detail-date {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.channel-detail-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.channel-detail-section {
+  padding: 1.5rem;
+}
+
+.channel-detail-members {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.channel-member-count {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.channel-member-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.channel-detail-activity p {
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+
+.channel-no-activity {
+  color: var(--text-muted) !important;
+}
+
+.channel-detail-pending {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pending-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  gap: 1rem;
+}
+
+.pending-identity {
+  color: var(--text);
+  word-break: break-all;
+}
+
+.pending-date {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.channel-invite-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.channel-invite-header .section-heading {
+  margin-bottom: 0;
+}
+
+.channel-invite-form {
+  margin-top: 1rem;
+}
+
+.channel-invite-fields {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.channel-invite-field {
+  flex: 1;
+}
+
+.channel-invite-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-bottom: 0.375rem;
+}
+
+.channel-invite-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .channel-invite-fields {
+    flex-direction: column;
+  }
+
+  .channel-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

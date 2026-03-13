@@ -1,0 +1,191 @@
+/* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
+/* See LICENSE for details. */
+
+/* Summary card */
+
+.compliance-summary {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.compliance-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.compliance-score-value {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.compliance-score-label {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.compliance-score-detail {
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  margin-bottom: 1.25rem;
+}
+
+/* Sections */
+
+.compliance-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.compliance-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.compliance-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.compliance-article-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* Checklist */
+
+.compliance-checklist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.compliance-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.compliance-check-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.compliance-check-icon.pass {
+  background: rgba(125, 211, 160, 0.15);
+  color: var(--success);
+}
+
+.compliance-check-icon.warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.compliance-check-icon.fail {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--error);
+}
+
+.compliance-check-label {
+  color: var(--text);
+}
+
+.compliance-warn-text {
+  color: #f59e0b;
+}
+
+/* Print styles */
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+
+  nav,
+  .btn-ghost,
+  .command-palette-overlay {
+    display: none !important;
+  }
+
+  .page {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    background: #fff;
+    break-inside: avoid;
+  }
+
+  .compliance-score-value {
+    color: #111;
+  }
+
+  .compliance-check-icon.pass {
+    background: #e0f5e9;
+    color: #2d8a4e;
+  }
+
+  .compliance-check-icon.warn {
+    background: #fef3cd;
+    color: #b45309;
+  }
+
+  .compliance-check-icon.fail {
+    background: #fde8e8;
+    color: #c53030;
+  }
+
+  .compliance-article-badge {
+    background: #eef;
+    color: #333;
+    border-color: #ccc;
+  }
+
+  .compliance-check-label,
+  .compliance-section-title {
+    color: #111;
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .compliance-score-value {
+    font-size: 2.5rem;
+  }
+
+  .compliance-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

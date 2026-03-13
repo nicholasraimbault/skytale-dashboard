@@ -1,0 +1,38 @@
+[
+  {
+    "date": "2026-03-13",
+    "title": "Trust Health Dashboard",
+    "description": "The Overview page now leads with a Trust Health Score \u2014 a single metric showing your agent trust posture across identity, encryption, governance, and compliance.",
+    "link": null
+  },
+  {
+    "date": "2026-03-12",
+    "title": "Security Command Center",
+    "description": "Manage revocations, webhooks, and audit logs from a unified Security page. Revoke compromised agents, set up event notifications, and inspect encrypted audit entries.",
+    "link": null
+  },
+  {
+    "date": "2026-03-11",
+    "title": "Federation & Agent Discovery",
+    "description": "Browse the cross-organization agent directory, filter by capability, and create federation invite tokens for multi-org collaboration.",
+    "link": null
+  },
+  {
+    "date": "2026-03-10",
+    "title": "API Playground",
+    "description": "Interactive API explorer with pre-populated authentication. Test any endpoint, see live responses, and copy as cURL \u2014 all from the dashboard.",
+    "link": null
+  },
+  {
+    "date": "2026-03-09",
+    "title": "Compliance Report Generator",
+    "description": "Auto-generate EU AI Act compliance reports mapping your Skytale usage to Article 16 requirements. Download as PDF for auditors.",
+    "link": null
+  },
+  {
+    "date": "2026-03-07",
+    "title": "Command Palette",
+    "description": "Press Cmd+K (Mac) or Ctrl+K (Windows) to instantly navigate, search channels, or trigger actions from anywhere in the dashboard.",
+    "link": null
+  }
+]

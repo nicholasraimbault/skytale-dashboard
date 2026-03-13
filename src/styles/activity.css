@@ -1,0 +1,165 @@
+/* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
+/* See LICENSE for details. */
+
+/* Filter chips */
+
+.activity-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.activity-filter-chip {
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.activity-filter-chip:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}
+
+.activity-filter-chip.active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* Timeline */
+
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activity-event {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-event:last-child {
+  border-bottom: none;
+}
+
+/* Icon circles */
+
+.activity-event-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.activity-icon-security {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--error);
+}
+
+.activity-icon-channels {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+}
+
+.activity-icon-agents {
+  background: rgba(125, 211, 160, 0.15);
+  color: var(--success);
+}
+
+.activity-icon-billing {
+  background: rgba(160, 160, 168, 0.15);
+  color: var(--text-muted);
+}
+
+/* Event content */
+
+.activity-event-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.activity-event-action {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.activity-event-actor {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-event-resource {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Timestamp */
+
+.activity-event-time {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Empty state */
+
+.activity-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+/* Load more */
+
+.activity-load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .activity-event {
+    gap: 0.75rem;
+  }
+
+  .activity-event-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .activity-event-time {
+    font-size: 0.6875rem;
+  }
+}

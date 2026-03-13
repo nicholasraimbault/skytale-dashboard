@@ -1,12 +1,108 @@
 /* Copyright 2026 Skytale. Licensed under the Business Source License 1.1. */
 /* See LICENSE for details. */
 
-nav {
+/* ========== Desktop Sidebar ========== */
+
+.nav-sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 240px;
+  height: 100vh;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 2rem;
+}
+
+.nav-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.25rem 1.25rem 1.5rem;
+}
+
+.nav-sidebar-brand {
+  font-family: 'Rethink Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.nav-sidebar-brand span {
+  color: var(--accent);
+}
+
+.nav-sidebar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav-section {
+  padding: 0 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.nav-section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  padding: 0.75rem 0.75rem 0.5rem;
+}
+
+.nav-sidebar .nav-link {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.nav-sidebar .nav-link:hover {
+  color: var(--text);
+  background: var(--bg-elevated);
+}
+
+.nav-sidebar .nav-link.active {
+  color: var(--text);
+  background: var(--bg-elevated);
+}
+
+.nav-sidebar-logout {
+  display: block;
+  width: calc(100% - 0rem);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.nav-sidebar-logout:hover {
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+}
+
+/* ========== Mobile Top Bar ========== */
+
+.nav-mobile-bar {
+  display: none;
 }
 
 .nav-glass {
@@ -48,10 +144,6 @@ nav {
 .nav-links {
   display: flex;
   align-items: center;
-}
-
-.nav-desktop {
-  gap: 2rem;
 }
 
 .nav-link {
@@ -115,15 +207,15 @@ nav {
               opacity 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-nav.open .nav-hamburger span:nth-child(1) {
+.nav-mobile-bar.open .nav-hamburger span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
 
-nav.open .nav-hamburger span:nth-child(2) {
+.nav-mobile-bar.open .nav-hamburger span:nth-child(2) {
   opacity: 0;
 }
 
-nav.open .nav-hamburger span:nth-child(3) {
+.nav-mobile-bar.open .nav-hamburger span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
 }
 
@@ -131,6 +223,20 @@ nav.open .nav-hamburger span:nth-child(3) {
 
 .nav-dropdown {
   display: none;
+}
+
+/* Mobile section labels */
+.nav-mobile-section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  padding: 0.75rem 0 0.25rem;
+}
+
+.nav-mobile-section-label:first-child {
+  padding-top: 0.25rem;
 }
 
 @media (min-width: 1440px) {
@@ -141,12 +247,23 @@ nav.open .nav-hamburger span:nth-child(3) {
 }
 
 @media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
+  /* Hide desktop sidebar on mobile */
+  .nav-sidebar {
+    display: none;
   }
 
-  .nav-desktop {
-    display: none;
+  /* Show mobile top bar */
+  .nav-mobile-bar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  .nav-hamburger {
+    display: flex;
   }
 
   .nav-dropdown {
@@ -160,7 +277,7 @@ nav.open .nav-hamburger span:nth-child(3) {
     contain: layout paint;
   }
 
-  nav.open .nav-dropdown {
+  .nav-mobile-bar.open .nav-dropdown {
     transform: scaleY(1);
     pointer-events: auto;
   }
@@ -182,7 +299,7 @@ nav.open .nav-hamburger span:nth-child(3) {
                 transform 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
-  nav.open .nav-mobile {
+  .nav-mobile-bar.open .nav-mobile {
     opacity: 1;
     filter: blur(0);
     transform: translateY(0) scale(1);
@@ -217,8 +334,10 @@ nav.open .nav-hamburger span:nth-child(3) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  nav,
-  nav * {
+  .nav-mobile-bar,
+  .nav-mobile-bar *,
+  .nav-sidebar,
+  .nav-sidebar * {
     transition-duration: 0.01ms !important;
   }
 }
