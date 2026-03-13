@@ -127,7 +127,7 @@ export default function NotificationCenter() {
       <button
         className="notification-bell"
         onClick={() => setOpen((prev) => !prev)}
-        aria-label="Notifications"
+        aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : 'Notifications'}
       >
         <svg
           width="18"

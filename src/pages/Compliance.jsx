@@ -81,18 +81,18 @@ export default function Compliance() {
 
   if (loading) {
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <div className="loading">Generating compliance report...</div>
-      </div>
+      </main>
     );
   }
 
   if (error) {
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <h1 className="page-title">Compliance</h1>
         <p className="error-msg">{error}</p>
-      </div>
+      </main>
     );
   }
 
@@ -159,7 +159,7 @@ export default function Compliance() {
   const readiness = Math.round((passingSections / allSections.length) * 100);
 
   return (
-    <div className="page compliance-page">
+    <main className="page compliance-page" id="main-content">
       <h1 className="page-title">Compliance</h1>
       <p className="page-subtitle">EU AI Act compliance report for your Skytale deployment.</p>
 
@@ -206,6 +206,6 @@ export default function Compliance() {
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 }

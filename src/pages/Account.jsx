@@ -62,21 +62,21 @@ export default function Account() {
 
   if (loading)
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <p className="loading">Loading account...</p>
-      </div>
+      </main>
     );
   if (error && !account)
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <p className="error-msg">{error}</p>
-      </div>
+      </main>
     );
 
   const plan = account?.plan || 'free';
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <h1 className="page-title">Account</h1>
       <p className="page-subtitle">Your account details and billing.</p>
 
@@ -177,6 +177,6 @@ export default function Account() {
           Manage team
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

@@ -103,7 +103,7 @@ export default function Welcome() {
   }
 
   return (
-    <div className="welcome-page">
+    <main className="welcome-page" id="main-content">
       <div className="welcome-content">
         <div className="welcome-header">
           {account?.avatar_url && (
@@ -184,6 +184,6 @@ export default function Welcome() {
           </a>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

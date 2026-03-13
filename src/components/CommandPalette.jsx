@@ -112,9 +112,21 @@ export default function CommandPalette() {
   let flatIndex = 0;
 
   return createPortal(
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className="cmd-palette-backdrop" onClick={close}>
-      <div className="cmd-palette" onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+      <div
+        className="cmd-palette"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        onKeyDown={handleKeyDown}
+      >
+        <label htmlFor="command-palette-search" className="visually-hidden">
+          Search actions
+        </label>
         <input
+          id="command-palette-search"
           ref={inputRef}
           className="cmd-palette-input"
           type="text"
@@ -132,7 +144,11 @@ export default function CommandPalette() {
                   <div
                     key={`${item.section}-${item.name}`}
                     className={`cmd-palette-item${idx === selectedIndex ? ' selected' : ''}`}
+                    role="option"
+                    aria-selected={idx === selectedIndex}
+                    tabIndex={-1}
                     onClick={() => selectItem(item)}
+                    onKeyDown={(e) => e.key === 'Enter' && selectItem(item)}
                     onMouseEnter={() => setSelectedIndex(idx)}
                   >
                     {item.name}

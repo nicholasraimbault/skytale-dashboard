@@ -45,6 +45,9 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       {authed && <Nav onLogout={handleLogout} />}
       {authed && <CommandPalette />}
       <Suspense fallback={null}>

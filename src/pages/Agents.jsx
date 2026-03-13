@@ -158,7 +158,7 @@ export default function Agents() {
     );
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <div className="keys-header">
         <div className="keys-header-left">
           <h1>Agents</h1>
@@ -174,13 +174,21 @@ export default function Agents() {
       {showForm && (
         <form className="agent-register-form card" onSubmit={handleRegister}>
           <div className="agent-form-row">
+            <label htmlFor="agent-name" className="visually-hidden">
+              Display name
+            </label>
             <input
+              id="agent-name"
               className="input"
               placeholder="Display name"
               value={form.displayName}
               onChange={(e) => setForm({ ...form, displayName: e.target.value })}
             />
+            <label htmlFor="agent-did" className="visually-hidden">
+              DID
+            </label>
             <input
+              id="agent-did"
               className="input"
               placeholder="DID (did:key:z6Mk...)"
               value={form.did}
@@ -189,13 +197,21 @@ export default function Agents() {
             />
           </div>
           <div className="agent-form-row">
+            <label htmlFor="agent-capabilities" className="visually-hidden">
+              Capabilities
+            </label>
             <input
+              id="agent-capabilities"
               className="input"
               placeholder="Capabilities (comma-separated)"
               value={form.capabilities}
               onChange={(e) => setForm({ ...form, capabilities: e.target.value })}
             />
+            <label htmlFor="agent-endpoint" className="visually-hidden">
+              Endpoint URL
+            </label>
             <input
+              id="agent-endpoint"
               className="input"
               placeholder="Endpoint URL (optional)"
               value={form.endpoint}
@@ -229,13 +245,21 @@ export default function Agents() {
 
       {/* Search/Filter bar */}
       <div className="filter-bar">
+        <label htmlFor="filter-capability" className="visually-hidden">
+          Filter by capability
+        </label>
         <input
+          id="filter-capability"
           className="input"
           placeholder="Filter by capability..."
           value={capabilityFilter}
           onChange={(e) => setCapabilityFilter(e.target.value)}
         />
+        <label htmlFor="filter-did" className="visually-hidden">
+          Filter by DID prefix
+        </label>
         <input
+          id="filter-did"
           className="input"
           placeholder="Filter by DID prefix..."
           value={didFilter}
@@ -260,13 +284,21 @@ export default function Agents() {
               {editingDid === agent.did ? (
                 <form onSubmit={handleSaveEdit} style={{ width: '100%' }}>
                   <div className="agent-form-row">
+                    <label htmlFor="edit-agent-name" className="visually-hidden">
+                      Display name
+                    </label>
                     <input
+                      id="edit-agent-name"
                       className="input"
                       placeholder="Display name"
                       value={editForm.displayName}
                       onChange={(e) => setEditForm({ ...editForm, displayName: e.target.value })}
                     />
+                    <label htmlFor="edit-agent-capabilities" className="visually-hidden">
+                      Capabilities
+                    </label>
                     <input
+                      id="edit-agent-capabilities"
                       className="input"
                       placeholder="Capabilities (comma-separated)"
                       value={editForm.capabilities}
@@ -274,7 +306,11 @@ export default function Agents() {
                     />
                   </div>
                   <div className="agent-form-row">
+                    <label htmlFor="edit-agent-endpoint" className="visually-hidden">
+                      Endpoint URL
+                    </label>
                     <input
+                      id="edit-agent-endpoint"
                       className="input"
                       placeholder="Endpoint URL"
                       value={editForm.endpoint}
@@ -342,6 +378,6 @@ export default function Agents() {
           ))
         )}
       </div>
-    </div>
+    </main>
   );
 }

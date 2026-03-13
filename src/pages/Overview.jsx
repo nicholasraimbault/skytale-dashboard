@@ -268,7 +268,7 @@ export default function Overview() {
   }
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <h1 className="page-title">Overview</h1>
       <p className="page-subtitle">Trust command center for your Skytale deployment.</p>
 
@@ -521,7 +521,17 @@ export default function Overview() {
             {topChannels.map((ch) => (
               <div key={ch.id} className="card channel-health-card">
                 <div className="channel-health-name">
-                  <span className={`health-dot ${healthDotClass(ch.last_message_at)}`} />
+                  <span
+                    className={`health-dot ${healthDotClass(ch.last_message_at)}`}
+                    role="status"
+                    aria-label={
+                      healthDotClass(ch.last_message_at) === 'green'
+                        ? 'Active'
+                        : healthDotClass(ch.last_message_at) === 'amber'
+                          ? 'Idle'
+                          : 'Inactive'
+                    }
+                  />
                   <span
                     style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   >
@@ -538,6 +548,6 @@ export default function Overview() {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

@@ -136,7 +136,7 @@ export default function Playground() {
   }
 
   return (
-    <div className="page playground-page">
+    <main className="page playground-page" id="main-content">
       <h1 className="page-title">API Playground</h1>
       <p className="page-subtitle">Explore and test the Skytale API interactively.</p>
 
@@ -225,6 +225,6 @@ export default function Playground() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

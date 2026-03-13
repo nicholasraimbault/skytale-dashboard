@@ -113,13 +113,13 @@ export default function Pricing() {
 
   if (loading)
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <p className="loading">Loading plans...</p>
-      </div>
+      </main>
     );
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <div className="keys-header">
         <div className="keys-header-left">
           <h1>Pricing</h1>
@@ -209,6 +209,6 @@ export default function Pricing() {
           </details>
         ))}
       </div>
-    </div>
+    </main>
   );
 }

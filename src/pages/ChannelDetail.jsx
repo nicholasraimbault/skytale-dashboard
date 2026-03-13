@@ -75,7 +75,7 @@ export default function ChannelDetail() {
   const healthColor = channel ? healthDotClass(channel.last_message_at) : 'red';
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <Link to="/channels" className="channel-detail-back">
         &larr; Channels
       </Link>
@@ -86,6 +86,10 @@ export default function ChannelDetail() {
           <span
             className={`channel-health-dot ${healthColor}`}
             title={`Health: ${healthColor}`}
+            role="status"
+            aria-label={
+              healthColor === 'green' ? 'Active' : healthColor === 'amber' ? 'Idle' : 'Inactive'
+            }
           ></span>
         </div>
         {channel?.created_at && (
@@ -102,6 +106,7 @@ export default function ChannelDetail() {
             <code>{inviteToken}</code>
             <button
               className="btn-copy"
+              aria-label="Copy to clipboard"
               onClick={() => {
                 navigator.clipboard.writeText(inviteToken);
                 setCopied(true);
@@ -170,8 +175,11 @@ export default function ChannelDetail() {
             <form className="channel-invite-form" onSubmit={handleCreateInvite}>
               <div className="channel-invite-fields">
                 <div className="channel-invite-field">
-                  <label className="channel-invite-label">Max uses</label>
+                  <label htmlFor="channel-max-uses" className="channel-invite-label">
+                    Max uses
+                  </label>
                   <input
+                    id="channel-max-uses"
                     className="input"
                     type="number"
                     min="1"
@@ -180,8 +188,11 @@ export default function ChannelDetail() {
                   />
                 </div>
                 <div className="channel-invite-field">
-                  <label className="channel-invite-label">TTL (seconds)</label>
+                  <label htmlFor="channel-ttl" className="channel-invite-label">
+                    TTL (seconds)
+                  </label>
                   <input
+                    id="channel-ttl"
                     className="input"
                     type="number"
                     min="60"
@@ -206,6 +217,6 @@ export default function ChannelDetail() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

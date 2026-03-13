@@ -152,14 +152,14 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <div className="loading">Loading settings...</div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="page settings-page">
+    <main className="page settings-page" id="main-content">
       <h1 className="page-title">Settings</h1>
       <p className="page-subtitle">Manage account preferences, exports, and integrations.</p>
 
@@ -173,8 +173,11 @@ export default function Settings() {
       <div className="card settings-section">
         <h2 className="settings-section-title">Notifications</h2>
         <div className="settings-field">
-          <label className="settings-label">Default Webhook URL</label>
+          <label htmlFor="settings-webhook-url" className="settings-label">
+            Default Webhook URL
+          </label>
           <input
+            id="settings-webhook-url"
             className="input"
             type="url"
             placeholder="https://example.com/webhook"
@@ -208,12 +211,15 @@ export default function Settings() {
       <div className="card settings-section">
         <h2 className="settings-section-title">API Defaults</h2>
         <div className="settings-field">
-          <label className="settings-label">Rate Limit Tier</label>
+          <span className="settings-label">Rate Limit Tier</span>
           <div className="settings-readonly mono">{settings.rate_limit_tier}</div>
         </div>
         <div className="settings-field">
-          <label className="settings-label">Default Channel Visibility</label>
+          <label htmlFor="settings-visibility" className="settings-label">
+            Default Channel Visibility
+          </label>
           <select
+            id="settings-visibility"
             className="input"
             value={settings.default_visibility}
             onChange={(e) => handleChange('default_visibility', e.target.value)}
@@ -229,8 +235,11 @@ export default function Settings() {
       <div className="card settings-section">
         <h2 className="settings-section-title">Organization</h2>
         <div className="settings-field">
-          <label className="settings-label">Org Domain</label>
+          <label htmlFor="settings-org-domain" className="settings-label">
+            Org Domain
+          </label>
           <input
+            id="settings-org-domain"
             className="input"
             type="text"
             placeholder="example.com"
@@ -239,7 +248,7 @@ export default function Settings() {
           />
         </div>
         <div className="settings-field">
-          <label className="settings-label">DID:web URI</label>
+          <span className="settings-label">DID:web URI</span>
           <div className="settings-readonly mono">{settings.did_web || 'Not configured'}</div>
         </div>
       </div>
@@ -297,6 +306,6 @@ export default function Settings() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

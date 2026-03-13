@@ -40,17 +40,43 @@ export default function Changelog() {
     }
   }
 
-  // Close on Escape key
+  // Focus trap + keyboard handling for modal
   useEffect(() => {
     if (!open) return;
+    const modal = modalRef.current;
+    if (!modal) return;
+    const previouslyFocused = document.activeElement;
+    const focusable = modal.querySelectorAll(
+      'button, a[href], input, [tabindex]:not([tabindex="-1"])',
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (first) first.focus();
 
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
         setOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     }
+
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      if (previouslyFocused && previouslyFocused.focus) previouslyFocused.focus();
+    };
   }, [open]);
 
   return (
@@ -59,12 +85,22 @@ export default function Changelog() {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4 5.6 21.2 8 14 2 9.2h7.6z" />
         </svg>
-        {hasUnseen && <span className="changelog-dot" />}
+        {hasUnseen && <span className="changelog-dot" aria-hidden="true" />}
       </button>
 
       {open && (
-        <div className="changelog-overlay" onClick={() => setOpen(false)}>
-          <div className="changelog-modal" ref={modalRef} onClick={(e) => e.stopPropagation()}>
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <div
+          className="changelog-overlay"
+          onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+        >
+          <div
+            className="changelog-modal"
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="What's new"
+          >
             <div className="changelog-modal-header">
               <h2 className="changelog-modal-title">What's New</h2>
               <button className="changelog-close" onClick={() => setOpen(false)} aria-label="Close">

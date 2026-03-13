@@ -80,7 +80,7 @@ export default function Activity() {
   }
 
   return (
-    <div className="page activity-page">
+    <main className="page activity-page" id="main-content">
       <h1 className="page-title">Activity</h1>
       <p className="page-subtitle">Chronological event stream across your account.</p>
 
@@ -89,6 +89,7 @@ export default function Activity() {
           <button
             key={f.key}
             className={`activity-filter-chip ${filter === f.key ? 'active' : ''}`}
+            aria-pressed={filter === f.key}
             onClick={() => handleFilterChange(f.key)}
           >
             {f.label}
@@ -137,6 +138,6 @@ export default function Activity() {
           </button>
         </div>
       )}
-    </div>
+    </main>
   );
 }

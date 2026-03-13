@@ -85,7 +85,7 @@ export default function Federation() {
   }
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <div className="keys-header">
         <div className="keys-header-left">
           <h1>Federation</h1>
@@ -96,13 +96,21 @@ export default function Federation() {
       <div className="federation-directory card">
         <h2 className="section-heading">Agent Directory</h2>
         <form className="directory-filters" onSubmit={handleSearch}>
+          <label htmlFor="fed-capability-filter" className="visually-hidden">
+            Filter by capability
+          </label>
           <input
+            id="fed-capability-filter"
             className="input"
             placeholder="Filter by capability"
             value={capability}
             onChange={(e) => setCapability(e.target.value)}
           />
+          <label htmlFor="fed-org-filter" className="visually-hidden">
+            Filter by org domain
+          </label>
           <input
+            id="fed-org-filter"
             className="input"
             placeholder="Filter by org domain"
             value={org}
@@ -172,6 +180,7 @@ export default function Federation() {
               <code>{inviteResult.token}</code>
               <button
                 className="btn-copy"
+                aria-label="Copy to clipboard"
                 onClick={() => {
                   navigator.clipboard.writeText(inviteResult.token);
                   setCopied(true);
@@ -194,8 +203,11 @@ export default function Federation() {
         <form className="federation-invite-form" onSubmit={handleCreateInvite}>
           <div className="federation-invite-fields">
             <div className="federation-invite-field">
-              <label className="federation-invite-label">Channel</label>
+              <label htmlFor="fed-channel" className="federation-invite-label">
+                Channel
+              </label>
               <select
+                id="fed-channel"
                 className="input"
                 value={selectedChannel}
                 onChange={(e) => setSelectedChannel(e.target.value)}
@@ -210,8 +222,11 @@ export default function Federation() {
               </select>
             </div>
             <div className="federation-invite-field">
-              <label className="federation-invite-label">Target org domain</label>
+              <label htmlFor="fed-target-org" className="federation-invite-label">
+                Target org domain
+              </label>
               <input
+                id="fed-target-org"
                 className="input"
                 placeholder="example.com"
                 value={targetOrg}
@@ -225,6 +240,6 @@ export default function Federation() {
           </button>
         </form>
       </div>
-    </div>
+    </main>
   );
 }

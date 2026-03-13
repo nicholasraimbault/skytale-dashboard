@@ -103,20 +103,20 @@ export default function Team() {
 
   if (loading)
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <p className="loading">Loading team...</p>
-      </div>
+      </main>
     );
   if (error && !account)
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <p className="error-msg">{error}</p>
-      </div>
+      </main>
     );
 
   if (!account?.org_id) {
     return (
-      <div className="page">
+      <main className="page" id="main-content">
         <h1 className="page-title">Team</h1>
         <p className="page-subtitle">Manage your team members and roles.</p>
         <div className="card" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
@@ -124,12 +124,12 @@ export default function Team() {
             Your account is not part of a team. Teams are available on the Pro and Enterprise plans.
           </p>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <h1 className="page-title">Team</h1>
       <p className="page-subtitle">Manage your team members and roles.</p>
 
@@ -140,7 +140,11 @@ export default function Team() {
         <div className="card team-invite-card">
           <h2 className="section-heading">Invite Member</h2>
           <form className="team-invite-form" onSubmit={handleInvite}>
+            <label htmlFor="team-email" className="visually-hidden">
+              Email address
+            </label>
             <input
+              id="team-email"
               className="input"
               type="email"
               placeholder="Email address"
@@ -287,6 +291,6 @@ export default function Team() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

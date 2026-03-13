@@ -26,7 +26,7 @@ export default function Security() {
   const [tab, setTab] = useState('revocations');
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <h1 className="page-title">Security</h1>
       <p className="page-subtitle">Revoke credentials, manage webhooks, and inspect audit logs.</p>
 
@@ -54,7 +54,7 @@ export default function Security() {
       {tab === 'revocations' && <RevocationsTab />}
       {tab === 'webhooks' && <WebhooksTab />}
       {tab === 'audit' && <AuditTab />}
-    </div>
+    </main>
   );
 }
 
@@ -134,7 +134,11 @@ function RevocationsTab() {
         <h3>Revoke Agent</h3>
         <form className="revoke-form" onSubmit={handleRevoke}>
           <div className="revoke-form-row">
+            <label htmlFor="revoke-agent-did" className="visually-hidden">
+              Agent DID
+            </label>
             <input
+              id="revoke-agent-did"
               className="input"
               placeholder="Agent DID (did:key:z6Mk...)"
               value={form.revoked_did}
@@ -153,7 +157,11 @@ function RevocationsTab() {
             </select>
           </div>
           <div className="revoke-form-row">
+            <label htmlFor="revoke-signature" className="visually-hidden">
+              Signature
+            </label>
             <input
+              id="revoke-signature"
               className="input"
               placeholder="Signature"
               value={form.signature}
@@ -177,7 +185,11 @@ function RevocationsTab() {
 
       <div className="check-bar">
         <form className="check-bar-form" onSubmit={handleCheck}>
+          <label htmlFor="check-did" className="visually-hidden">
+            Check DID revocation status
+          </label>
           <input
+            id="check-did"
             className="input"
             placeholder="Check DID revocation status..."
             value={checkDid}
@@ -302,7 +314,11 @@ function WebhooksTab() {
       <div className="card webhook-form">
         <h3>Register Webhook</h3>
         <form onSubmit={handleCreate}>
+          <label htmlFor="webhook-url" className="visually-hidden">
+            Webhook URL
+          </label>
           <input
+            id="webhook-url"
             className="input"
             placeholder="https://..."
             value={form.url}
@@ -417,7 +433,11 @@ function AuditTab() {
   return (
     <div className="security-tab-content">
       <form className="audit-controls" onSubmit={handleLoad}>
+        <label htmlFor="audit-channel" className="visually-hidden">
+          Channel name
+        </label>
         <input
+          id="audit-channel"
           className="input"
           placeholder="Channel name (org/namespace/service)"
           value={channel}
@@ -439,10 +459,10 @@ function AuditTab() {
           <table className="audit-table">
             <thead>
               <tr>
-                <th>Epoch</th>
-                <th>Sequence</th>
-                <th>Created At</th>
-                <th>Blob Size</th>
+                <th scope="col">Epoch</th>
+                <th scope="col">Sequence</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Blob Size</th>
               </tr>
             </thead>
             <tbody>

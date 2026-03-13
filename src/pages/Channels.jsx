@@ -44,7 +44,7 @@ export default function Channels() {
     );
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <div className="keys-header">
         <div className="keys-header-left">
           <h1>Channels</h1>
@@ -59,6 +59,7 @@ export default function Channels() {
             <code>{inviteToken}</code>
             <button
               className="btn-copy"
+              aria-label="Copy to clipboard"
               onClick={() => {
                 navigator.clipboard.writeText(inviteToken);
                 setCopied(true);
@@ -85,7 +86,17 @@ export default function Channels() {
             <div key={ch.id} className="card key-item">
               <div className="key-info">
                 <span className="key-name">
-                  <span className={`health-dot ${healthDotClass(ch.last_message_at)}`} />{' '}
+                  <span
+                    className={`health-dot ${healthDotClass(ch.last_message_at)}`}
+                    role="status"
+                    aria-label={
+                      healthDotClass(ch.last_message_at) === 'green'
+                        ? 'Active'
+                        : healthDotClass(ch.last_message_at) === 'amber'
+                          ? 'Idle'
+                          : 'Inactive'
+                    }
+                  />{' '}
                   <Link
                     to={`/channels/${ch.id}`}
                     style={{ color: 'var(--text)', textDecoration: 'none' }}
@@ -132,6 +143,6 @@ export default function Channels() {
           ))
         )}
       </div>
-    </div>
+    </main>
   );
 }

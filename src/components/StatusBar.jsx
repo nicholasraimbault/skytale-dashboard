@@ -27,6 +27,8 @@ export default function StatusBar() {
     >
       <span
         className={`status-dot${status === 'operational' ? ' green' : status === 'degraded' ? ' red' : ''}`}
+        role="status"
+        aria-label={`System status: ${status === 'checking' ? 'Checking' : status === 'operational' ? 'Operational' : 'Degraded'}`}
       />
       <span className="status-text">
         {status === 'checking'

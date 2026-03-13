@@ -95,7 +95,7 @@ export default function Keys() {
     );
 
   return (
-    <div className="page">
+    <main className="page" id="main-content">
       <div className="keys-header">
         <div className="keys-header-left">
           <h1>API Keys</h1>
@@ -110,6 +110,7 @@ export default function Keys() {
             <code>{newKeySecret}</code>
             <button
               className="btn-copy"
+              aria-label="Copy to clipboard"
               onClick={() => {
                 navigator.clipboard.writeText(newKeySecret);
                 setCopied(true);
@@ -123,7 +124,11 @@ export default function Keys() {
       )}
 
       <form className="create-key-form" onSubmit={handleCreate}>
+        <label htmlFor="key-name" className="visually-hidden">
+          Key name
+        </label>
         <input
+          id="key-name"
           ref={nameRef}
           type="text"
           className="input"
@@ -195,6 +200,6 @@ export default function Keys() {
           })
         )}
       </div>
-    </div>
+    </main>
   );
 }
