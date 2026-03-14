@@ -240,7 +240,6 @@ export default function Overview() {
   const plan = usage?.plan_tier || 'free';
   const messagesUsed = usage?.messages_relayed || 0;
   const messagesLimit = usage?.limits?.messages_per_month || 100000;
-  const tokenExchanges = usage?.token_exchanges || 0;
   const chart = usage?.daily || [];
   const messagesPercent = Math.min((messagesUsed / messagesLimit) * 100, 100);
 

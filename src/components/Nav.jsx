@@ -233,7 +233,12 @@ export default function Nav({ onLogout }) {
       <aside className="nav-sidebar" aria-label="Main navigation">
         {/* Rail: always visible — icons + brand */}
         <div className="nav-sidebar-rail">
-          <div className="nav-sidebar-rail-brand"><strong>s</strong>t<strong><span>.</span></strong></div>
+          <div className="nav-sidebar-rail-brand">
+            <strong>s</strong>t
+            <strong>
+              <span>.</span>
+            </strong>
+          </div>
 
           {/* Trust */}
           <NavLink
