@@ -252,8 +252,10 @@ input {
 /* Layout */
 
 .page {
-  max-width: 1800px;
-  padding: 2.5rem 3rem 3rem calc(48px + 3rem);
+  padding: 2rem 2rem 3rem calc(48px + 2rem);
+  min-height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 .page-title {

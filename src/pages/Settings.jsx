@@ -208,87 +208,106 @@ export default function Settings() {
         </p>
       )}
 
-      {/* Notifications */}
-      <div className="card settings-section">
-        <h2 className="settings-section-title">Notifications</h2>
-        <div className="settings-field">
-          <label htmlFor="settings-webhook-url" className="settings-label">
-            Default Webhook URL
-          </label>
-          <input
-            id="settings-webhook-url"
-            className="input"
-            type="url"
-            placeholder="https://example.com/webhook"
-            value={settings.webhook_url}
-            onChange={(e) => handleChange('webhook_url', e.target.value)}
-          />
-        </div>
-        <div className="settings-field">
-          <label className="settings-checkbox-label">
+      {/* Row 1: Notifications + API Defaults */}
+      <div className="settings-row">
+        <div className="card settings-section">
+          <h2 className="settings-section-title">Notifications</h2>
+          <div className="settings-field">
+            <label htmlFor="settings-webhook-url" className="settings-label">
+              Default Webhook URL
+            </label>
             <input
-              type="checkbox"
-              checked={settings.notify_quota}
-              onChange={(e) => handleChange('notify_quota', e.target.checked)}
+              id="settings-webhook-url"
+              className="input"
+              type="url"
+              placeholder="https://example.com/webhook"
+              value={settings.webhook_url}
+              onChange={(e) => handleChange('webhook_url', e.target.value)}
             />
-            <span>Quota alerts</span>
-          </label>
+          </div>
+          <div className="settings-field">
+            <label className="settings-checkbox-label">
+              <input
+                type="checkbox"
+                checked={settings.notify_quota}
+                onChange={(e) => handleChange('notify_quota', e.target.checked)}
+              />
+              <span>Quota alerts</span>
+            </label>
+          </div>
+          <div className="settings-field">
+            <label className="settings-checkbox-label">
+              <input
+                type="checkbox"
+                checked={settings.notify_security}
+                onChange={(e) => handleChange('notify_security', e.target.checked)}
+              />
+              <span>Security events</span>
+            </label>
+          </div>
         </div>
-        <div className="settings-field">
-          <label className="settings-checkbox-label">
-            <input
-              type="checkbox"
-              checked={settings.notify_security}
-              onChange={(e) => handleChange('notify_security', e.target.checked)}
-            />
-            <span>Security events</span>
-          </label>
+
+        <div className="card settings-section">
+          <h2 className="settings-section-title">API Defaults</h2>
+          <div className="settings-field">
+            <span className="settings-label">Rate Limit Tier</span>
+            <div className="settings-readonly mono">{settings.rate_limit_tier}</div>
+          </div>
+          <div className="settings-field">
+            <label htmlFor="settings-visibility" className="settings-label">
+              Default Channel Visibility
+            </label>
+            <select
+              id="settings-visibility"
+              className="input"
+              value={settings.default_visibility}
+              onChange={(e) => handleChange('default_visibility', e.target.value)}
+            >
+              <option value="public">Public</option>
+              <option value="organization">Organization</option>
+              <option value="private">Private</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* API Defaults */}
-      <div className="card settings-section">
-        <h2 className="settings-section-title">API Defaults</h2>
-        <div className="settings-field">
-          <span className="settings-label">Rate Limit Tier</span>
-          <div className="settings-readonly mono">{settings.rate_limit_tier}</div>
+      {/* Row 2: Organization + Data Export */}
+      <div className="settings-row">
+        <div className="card settings-section">
+          <h2 className="settings-section-title">Organization</h2>
+          <div className="settings-field">
+            <label htmlFor="settings-org-domain" className="settings-label">
+              Org Domain
+            </label>
+            <input
+              id="settings-org-domain"
+              className="input"
+              type="text"
+              placeholder="example.com"
+              value={settings.org_domain}
+              onChange={(e) => handleChange('org_domain', e.target.value)}
+            />
+          </div>
+          <div className="settings-field">
+            <span className="settings-label">DID:web URI</span>
+            <div className="settings-readonly mono">{settings.did_web || 'Not configured'}</div>
+          </div>
         </div>
-        <div className="settings-field">
-          <label htmlFor="settings-visibility" className="settings-label">
-            Default Channel Visibility
-          </label>
-          <select
-            id="settings-visibility"
-            className="input"
-            value={settings.default_visibility}
-            onChange={(e) => handleChange('default_visibility', e.target.value)}
-          >
-            <option value="public">Public</option>
-            <option value="organization">Organization</option>
-            <option value="private">Private</option>
-          </select>
-        </div>
-      </div>
 
-      {/* Organization */}
-      <div className="card settings-section">
-        <h2 className="settings-section-title">Organization</h2>
-        <div className="settings-field">
-          <label htmlFor="settings-org-domain" className="settings-label">
-            Org Domain
-          </label>
-          <input
-            id="settings-org-domain"
-            className="input"
-            type="text"
-            placeholder="example.com"
-            value={settings.org_domain}
-            onChange={(e) => handleChange('org_domain', e.target.value)}
-          />
-        </div>
-        <div className="settings-field">
-          <span className="settings-label">DID:web URI</span>
-          <div className="settings-readonly mono">{settings.did_web || 'Not configured'}</div>
+        <div className="card settings-section">
+          <h2 className="settings-section-title">Data Export</h2>
+          <p className="settings-section-desc">Download your data in standard formats.</p>
+          <div className="settings-export-buttons">
+            <button className="btn-ghost" onClick={handleExportUsage}>
+              Export Usage (CSV)
+            </button>
+            <button className="btn-ghost" onClick={handleExportAgents}>
+              Export Agents (JSON)
+            </button>
+            <button className="btn-ghost" onClick={handleExportAudit}>
+              Export Audit (CSV)
+            </button>
+          </div>
         </div>
       </div>
 
@@ -297,23 +316,6 @@ export default function Settings() {
         <button className="btn-primary" onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Settings'}
         </button>
-      </div>
-
-      {/* Data Export */}
-      <div className="card settings-section">
-        <h2 className="settings-section-title">Data Export</h2>
-        <p className="settings-section-desc">Download your data in standard formats.</p>
-        <div className="settings-export-buttons">
-          <button className="btn-ghost" onClick={handleExportUsage}>
-            Export Usage (CSV)
-          </button>
-          <button className="btn-ghost" onClick={handleExportAgents}>
-            Export Agents (JSON)
-          </button>
-          <button className="btn-ghost" onClick={handleExportAudit}>
-            Export Audit (CSV)
-          </button>
-        </div>
       </div>
 
       {/* Danger Zone */}

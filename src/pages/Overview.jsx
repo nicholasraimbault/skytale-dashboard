@@ -330,7 +330,7 @@ export default function Overview() {
       <h1 className="page-title">Overview</h1>
       <p className="page-subtitle">Trust command center for your Skytale deployment.</p>
 
-      {/* Trust Health Score */}
+      {/* Trust Health — full width */}
       <div className="card trust-health-hero">
         <div className={`trust-score ${scoreColor(overallScore)}`}>
           {overallScore}
@@ -401,282 +401,306 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* Getting Started checklist */}
-      {showChecklist && (
-        <div className="card getting-started">
-          <div className="getting-started-header">
-            <h2>Getting Started</h2>
-            <button
-              className="trust-action-dismiss"
-              onClick={dismissChecklist}
-              aria-label="Dismiss checklist"
-            >
-              &#x2715;
-            </button>
-          </div>
-          {checklistItems.map((item) => (
-            <div key={item.label} className="checklist-item">
-              <span className={`checklist-check ${item.done ? 'done' : ''}`}>
-                {item.done ? '\u2713' : ''}
-              </span>
-              {item.done ? (
-                <span>{item.label}</span>
-              ) : item.link ? (
-                <Link to={item.link}>{item.label}</Link>
-              ) : (
-                <span style={{ color: 'var(--text-muted)' }}>{item.label}</span>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* SDK Quickstart */}
-      {showChecklist && !allChecklistDone && (
-        <div className="card" style={{ marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
-            SDK Quickstart
-          </h2>
-          <div className="quickstart-tabs">
-            {Object.keys(TAB_LABELS).map((key) => (
-              <button
-                key={key}
-                className={`quickstart-tab ${activeTab === key ? 'active' : ''}`}
-                onClick={() => setActiveTab(key)}
-              >
-                {TAB_LABELS[key]}
-              </button>
-            ))}
-          </div>
-          <pre className="quickstart-code">
-            <code>{snippets[activeTab]}</code>
-          </pre>
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', alignItems: 'center' }}>
-            <button className="btn-ghost" onClick={handleCopyCode}>
-              {codeCopied ? 'Copied!' : 'Copy'}
-            </button>
-            <a
-              href="https://skytale.sh/docs"
-              className="btn-ghost"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open docs
-            </a>
-          </div>
-        </div>
-      )}
-
-      {/* Trust Action Cards */}
-      {visibleActions.length > 0 && (
-        <div className="trust-actions">
-          {visibleActions.map((action) => (
-            <div key={action.id} className={`card trust-action-card ${action.level}`}>
-              <span className="trust-action-text">{action.message}</span>
-              <Link
-                to={action.link}
-                className="btn-ghost"
-                style={{ padding: '0.4rem 1rem', fontSize: '0.8125rem' }}
-              >
-                Fix
-              </Link>
-              <button
-                className="trust-action-dismiss"
-                onClick={() => dismissAction(action.id)}
-                aria-label="Dismiss"
-              >
-                &#x2715;
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Usage & Quota */}
-      <div className="grid-3 overview-stats">
-        <div className="card">
-          <span className="stat-label">Plan</span>
-          <span className={`badge ${PLAN_BADGES[plan] || 'badge-free'}`}>{plan}</span>
-        </div>
-        <div className="card">
-          <span className="stat-label">Messages this period</span>
-          <span className="stat-value">{formatNumber(messagesUsed)}</span>
-          <span className="stat-detail">of {formatNumber(messagesLimit)} limit</span>
-        </div>
-        <div className="card">
-          <span className="stat-label">Token exchanges</span>
-          <span className="stat-value">{formatNumber(tokenExchanges)}</span>
-          <span className="stat-detail">this period</span>
-        </div>
-      </div>
-
-      <div className="overview-split">
-      {chart.length > 0 && (
-        <div className="card usage-chart-card">
-          <h2 className="usage-chart-title">Daily messages (last 30 days)</h2>
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={chart} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-              <defs>
-                <linearGradient id="msgGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.25} />
-                  <stop offset="100%" stopColor="var(--accent)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="date"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6B6B73', fontSize: 11 }}
-                dy={8}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: '#6B6B73', fontSize: 11 }}
-                tickFormatter={formatNumber}
-                dx={-4}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="messages"
-                stroke="var(--accent)"
-                strokeWidth={2}
-                fill="url(#msgGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      <div className="card quota-section">
-        <div className="quota-label">
-          <span className="quota-label-text">Messages</span>
-          <span className="quota-label-value">
-            {formatNumber(messagesUsed)} / {formatNumber(messagesLimit)}
-          </span>
-        </div>
-        <div className="quota-bar-bg">
-          <div className={barClass(messagesPercent)} style={{ width: `${messagesPercent}%` }} />
-        </div>
-
-        {messagesUsed > 0 && avgDailyUsage > 0 && daysUntilLimit !== null && daysUntilLimit > 0 && (
-          <p className="burn-rate">
-            At current rate, you'll hit your limit in <strong>{daysUntilLimit} days</strong>
-          </p>
-        )}
-
-        {messagesPercent >= 100 && (
-          <div className="upgrade-banner critical">
-            Rate-limited. <Link to="/account">Upgrade now</Link> to continue sending messages.
-          </div>
-        )}
-        {messagesPercent >= 90 && messagesPercent < 100 && (
-          <div className="upgrade-banner critical">
-            You've used {Math.round(messagesPercent)}% of your message limit.{' '}
-            <Link to="/account">Upgrade now</Link>
-          </div>
-        )}
-        {messagesPercent >= 75 && messagesPercent < 90 && (
-          <div className="upgrade-banner warn">
-            You've used {Math.round(messagesPercent)}% of your message limit.{' '}
-            <Link to="/account">Consider upgrading</Link>
-          </div>
-        )}
-      </div>
-      </div>
-
-      {/* Channel Health Summary */}
-      {topChannels.length > 0 && (
-        <div style={{ marginTop: '2rem' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '1rem',
-            }}
-          >
-            <h2 className="section-heading" style={{ marginBottom: 0 }}>
-              Channel Health
-            </h2>
-            {channels.length > 6 && (
-              <Link to="/channels" style={{ fontSize: '0.8125rem' }}>
-                View all
-              </Link>
-            )}
-          </div>
-          <div className="channel-health-grid">
-            {topChannels.map((ch) => (
-              <div key={ch.id} className="card channel-health-card">
-                <div className="channel-health-name">
-                  <span
-                    className={`health-dot ${healthDotClass(ch.last_message_at)}`}
-                    role="status"
-                    aria-label={
-                      healthDotClass(ch.last_message_at) === 'green'
-                        ? 'Active'
-                        : healthDotClass(ch.last_message_at) === 'amber'
-                          ? 'Idle'
-                          : 'Inactive'
-                    }
-                  />
-                  <span
-                    style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                  >
-                    {ch.name}
-                  </span>
-                </div>
-                <div className="channel-health-activity">
-                  {ch.last_message_at
-                    ? `Last active ${timeAgo(ch.last_message_at)}`
-                    : 'No activity'}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Recent Security Events */}
-      <div className="card" style={{ marginTop: '2rem' }}>
+      {/* Two-column dashboard layout */}
+      <div
+        className="overview-columns"
+        style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', alignItems: 'flex-start' }}
+      >
+        {/* Left column — main content */}
         <div
+          style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+        >
+          {/* SDK Quickstart */}
+          {showChecklist && !allChecklistDone && (
+            <div className="card">
+              <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem' }}>
+                SDK Quickstart
+              </h2>
+              <div className="quickstart-tabs">
+                {Object.keys(TAB_LABELS).map((key) => (
+                  <button
+                    key={key}
+                    className={`quickstart-tab ${activeTab === key ? 'active' : ''}`}
+                    onClick={() => setActiveTab(key)}
+                  >
+                    {TAB_LABELS[key]}
+                  </button>
+                ))}
+              </div>
+              <pre className="quickstart-code">
+                <code>{snippets[activeTab]}</code>
+              </pre>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '0.75rem',
+                  marginTop: '1rem',
+                  alignItems: 'center',
+                }}
+              >
+                <button className="btn-ghost" onClick={handleCopyCode}>
+                  {codeCopied ? 'Copied!' : 'Copy'}
+                </button>
+                <a
+                  href="https://skytale.sh/docs"
+                  className="btn-ghost"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open docs
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Chart */}
+          {chart.length > 0 && (
+            <div className="card usage-chart-card">
+              <h2 className="usage-chart-title">Daily messages (last 30 days)</h2>
+              <ResponsiveContainer width="100%" height={280}>
+                <AreaChart data={chart} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                  <defs>
+                    <linearGradient id="msgGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.25} />
+                      <stop offset="100%" stopColor="var(--accent)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="date"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6B6B73', fontSize: 11 }}
+                    dy={8}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6B6B73', fontSize: 11 }}
+                    tickFormatter={formatNumber}
+                    dx={-4}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area
+                    type="monotone"
+                    dataKey="messages"
+                    stroke="var(--accent)"
+                    strokeWidth={2}
+                    fill="url(#msgGradient)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {/* Channel Health */}
+          {topChannels.length > 0 && (
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '1rem',
+                }}
+              >
+                <h2 className="section-heading" style={{ marginBottom: 0 }}>
+                  Channel Health
+                </h2>
+                {channels.length > 6 && (
+                  <Link to="/channels" style={{ fontSize: '0.8125rem' }}>
+                    View all
+                  </Link>
+                )}
+              </div>
+              <div className="channel-health-grid">
+                {topChannels.map((ch) => (
+                  <div key={ch.id} className="card channel-health-card">
+                    <div className="channel-health-name">
+                      <span
+                        className={`health-dot ${healthDotClass(ch.last_message_at)}`}
+                        role="status"
+                        aria-label={
+                          healthDotClass(ch.last_message_at) === 'green'
+                            ? 'Active'
+                            : healthDotClass(ch.last_message_at) === 'amber'
+                              ? 'Idle'
+                              : 'Inactive'
+                        }
+                      />
+                      <span
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {ch.name}
+                      </span>
+                    </div>
+                    <div className="channel-health-activity">
+                      {ch.last_message_at
+                        ? `Last active ${timeAgo(ch.last_message_at)}`
+                        : 'No activity'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right column — status & actions */}
+        <div
+          className="overview-aside"
           style={{
+            width: 340,
+            flexShrink: 0,
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1rem',
+            flexDirection: 'column',
+            gap: '1.5rem',
           }}
         >
-          <h2 className="section-heading" style={{ marginBottom: 0 }}>
-            Recent Security Events
-          </h2>
-          <Link to="/activity" style={{ fontSize: '0.8125rem' }}>
-            View all &rarr;
-          </Link>
-        </div>
-        {securityEvents.length === 0 ? (
-          <p className="empty-state" style={{ padding: '1rem 0' }}>
-            No security events recorded
-          </p>
-        ) : (
-          <div className="security-events-list">
-            {securityEvents.map((ev, i) => (
-              <div key={ev.id || i} className="security-event-row">
-                <span className="security-event-action">{ev.action || 'Event'}</span>
-                {ev.actor && <span className="security-event-actor">{truncateDid(ev.actor)}</span>}
-                <span className="security-event-time">
-                  {ev.created_at ? timeAgo(ev.created_at) : ''}
+          {/* Getting Started */}
+          {showChecklist && (
+            <div className="card getting-started">
+              <div className="getting-started-header">
+                <h2>Getting Started</h2>
+                <button
+                  className="trust-action-dismiss"
+                  onClick={dismissChecklist}
+                  aria-label="Dismiss checklist"
+                >
+                  &#x2715;
+                </button>
+              </div>
+              {checklistItems.map((item) => (
+                <div key={item.label} className="checklist-item">
+                  <span className={`checklist-check ${item.done ? 'done' : ''}`}>
+                    {item.done ? '\u2713' : ''}
+                  </span>
+                  {item.done ? (
+                    <span>{item.label}</span>
+                  ) : item.link ? (
+                    <Link to={item.link}>{item.label}</Link>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)' }}>{item.label}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Quota & Plan */}
+          <div className="card quota-section">
+            <div className="quota-label">
+              <span className="quota-label-text">
+                Messages
+                <span
+                  className={`badge ${PLAN_BADGES[plan] || 'badge-free'}`}
+                  style={{ marginLeft: '0.5rem', verticalAlign: 'middle' }}
+                >
+                  {plan}
                 </span>
+              </span>
+              <span className="quota-label-value">
+                {formatNumber(messagesUsed)} / {formatNumber(messagesLimit)}
+              </span>
+            </div>
+            <div className="quota-bar-bg">
+              <div className={barClass(messagesPercent)} style={{ width: `${messagesPercent}%` }} />
+            </div>
+            {messagesUsed > 0 &&
+              avgDailyUsage > 0 &&
+              daysUntilLimit !== null &&
+              daysUntilLimit > 0 && (
+                <p className="burn-rate">
+                  At current rate, you'll hit your limit in <strong>{daysUntilLimit} days</strong>
+                </p>
+              )}
+            {messagesPercent >= 100 && (
+              <div className="upgrade-banner critical">
+                Rate-limited. <Link to="/account">Upgrade now</Link> to continue sending messages.
+              </div>
+            )}
+            {messagesPercent >= 90 && messagesPercent < 100 && (
+              <div className="upgrade-banner critical">
+                You've used {Math.round(messagesPercent)}% of your message limit.{' '}
+                <Link to="/account">Upgrade now</Link>
+              </div>
+            )}
+            {messagesPercent >= 75 && messagesPercent < 90 && (
+              <div className="upgrade-banner warn">
+                You've used {Math.round(messagesPercent)}% of your message limit.{' '}
+                <Link to="/account">Consider upgrading</Link>
+              </div>
+            )}
+          </div>
+
+          {/* Trust Actions */}
+          {visibleActions.length > 0 &&
+            visibleActions.map((action) => (
+              <div key={action.id} className={`card trust-action-card ${action.level}`}>
+                <span className="trust-action-text">{action.message}</span>
+                <Link
+                  to={action.link}
+                  className="btn-ghost"
+                  style={{ padding: '0.4rem 1rem', fontSize: '0.8125rem' }}
+                >
+                  Fix
+                </Link>
+                <button
+                  className="trust-action-dismiss"
+                  onClick={() => dismissAction(action.id)}
+                  aria-label="Dismiss"
+                >
+                  &#x2715;
+                </button>
               </div>
             ))}
+
+          {/* Security Events */}
+          <div className="card">
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '1rem',
+              }}
+            >
+              <h2 className="section-heading" style={{ marginBottom: 0 }}>
+                Security Events
+              </h2>
+              <Link to="/activity" style={{ fontSize: '0.8125rem' }}>
+                View all &rarr;
+              </Link>
+            </div>
+            {securityEvents.length === 0 ? (
+              <p className="empty-state" style={{ padding: '1rem 0' }}>
+                No security events recorded
+              </p>
+            ) : (
+              <div className="security-events-list">
+                {securityEvents.map((ev, i) => (
+                  <div key={ev.id || i} className="security-event-row">
+                    <span className="security-event-action">{ev.action || 'Event'}</span>
+                    {ev.actor && (
+                      <span className="security-event-actor">{truncateDid(ev.actor)}</span>
+                    )}
+                    <span className="security-event-time">
+                      {ev.created_at ? timeAgo(ev.created_at) : ''}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
-      {/* What's Next? */}
+      {/* What's Next — full width below the columns */}
       {(checklistDismissed || allChecklistDone) && !whatsNextDismissed && (
-        <div className="card whats-next-section" style={{ marginTop: '2rem' }}>
+        <div className="card whats-next-section" style={{ marginTop: '1.5rem' }}>
           <div className="whats-next-header">
             <h2>What&apos;s Next?</h2>
             <button
