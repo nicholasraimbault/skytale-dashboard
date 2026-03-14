@@ -1098,7 +1098,8 @@ export default function Compliance() {
           <span
             className={`compliance-score-value ${readiness === 100 ? 'score-green' : readiness >= 80 ? 'score-amber' : 'score-red'}`}
           >
-            {readiness}%
+            {readiness}
+            <span className="compliance-score-unit">%</span>
           </span>
           <span className="compliance-score-label">EU AI Act Readiness</span>
         </div>

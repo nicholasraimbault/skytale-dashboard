@@ -39,6 +39,9 @@ const MIN_SCALE = 0.01;
 
 export default function Nav({ onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => localStorage.getItem('skytale_sidebar_collapsed') === 'true',
+  );
   const navigate = useNavigate();
 
   const navRef = useRef(null);
@@ -134,6 +137,17 @@ export default function Nav({ onLogout }) {
     navigate('/login');
   }
 
+  // Sync sidebar collapsed state to body class
+  useEffect(() => {
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+  }, [collapsed]);
+
+  function toggleSidebar() {
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem('skytale_sidebar_collapsed', String(next));
+  }
+
   // Cleanup animations on unmount
   useEffect(() => {
     return () => animsRef.current.forEach((a) => a.cancel());
@@ -141,6 +155,23 @@ export default function Nav({ onLogout }) {
 
   return (
     <>
+      {/* Expand button (visible when sidebar collapsed) */}
+      <button className="nav-expand-btn" onClick={toggleSidebar} aria-label="Expand sidebar">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M13 17l5-5-5-5" />
+          <path d="M6 17l5-5-5-5" />
+        </svg>
+      </button>
+
       {/* Desktop sidebar */}
       <aside className="nav-sidebar">
         <div className="nav-sidebar-header">
@@ -153,6 +184,25 @@ export default function Nav({ onLogout }) {
           <div className="nav-sidebar-actions">
             <Changelog />
             <NotificationCenter />
+            <button
+              className="nav-collapse-btn"
+              onClick={toggleSidebar}
+              aria-label="Collapse sidebar"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M11 17l-5-5 5-5" />
+                <path d="M18 17l-5-5 5-5" />
+              </svg>
+            </button>
           </div>
         </div>
 

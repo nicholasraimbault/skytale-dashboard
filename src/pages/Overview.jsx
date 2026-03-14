@@ -332,11 +332,17 @@ export default function Overview() {
 
       {/* Trust Health Score */}
       <div className="card trust-health-hero">
-        <div className={`trust-score ${scoreColor(overallScore)}`}>{overallScore}%</div>
+        <div className={`trust-score ${scoreColor(overallScore)}`}>
+          {overallScore}
+          <span className="trust-score-unit">%</span>
+        </div>
         <div className="trust-score-label">Trust Health</div>
         <div className="trust-breakdown">
           <div className="card trust-card">
-            <div className={`trust-card-score ${scoreColor(identityScore)}`}>{identityScore}%</div>
+            <div className={`trust-card-score ${scoreColor(identityScore)}`}>
+              {identityScore}
+              <span className="trust-card-score-unit">%</span>
+            </div>
             <div className="trust-card-label">Identity</div>
             <Link to="/agents" className="trust-card-link">
               View details
@@ -349,7 +355,8 @@ export default function Overview() {
           </div>
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(encryptionScore)}`}>
-              {encryptionScore}%
+              {encryptionScore}
+              <span className="trust-card-score-unit">%</span>
             </div>
             <div className="trust-card-label">Encryption</div>
             <Link to="/channels" className="trust-card-link">
@@ -363,7 +370,8 @@ export default function Overview() {
           </div>
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(governanceScore)}`}>
-              {governanceScore}%
+              {governanceScore}
+              <span className="trust-card-score-unit">%</span>
             </div>
             <div className="trust-card-label">Governance</div>
             <Link to="/keys" className="trust-card-link">
@@ -381,7 +389,8 @@ export default function Overview() {
           </div>
           <div className="card trust-card">
             <div className={`trust-card-score ${scoreColor(complianceScore)}`}>
-              {complianceScore}%
+              {complianceScore}
+              <span className="trust-card-score-unit">%</span>
             </div>
             <div className="trust-card-label">Compliance</div>
             <Link to="/account" className="trust-card-link">
