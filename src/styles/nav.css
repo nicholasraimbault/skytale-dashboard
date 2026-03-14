@@ -38,10 +38,11 @@ body:not(.sidebar-collapsed) .nav-sidebar-rail {
 
 .nav-sidebar-rail-brand {
   font-family: 'Rethink Sans', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 400;
   color: var(--text);
   margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
 }
 
 .nav-sidebar-rail-brand span {
