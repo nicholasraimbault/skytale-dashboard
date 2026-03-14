@@ -60,6 +60,7 @@ export default function Nav({ onLogout }) {
   // --- Sidebar panel refs ---
   const sidebarPanelRef = useRef(null);
   const sidebarContentRef = useRef(null);
+  const sidebarGlassRef = useRef(null);
 
   const sbAnimsRef = useRef([]);
   const sbScaleRef = useRef(collapsed ? MIN_SCALE : 1);
@@ -140,7 +141,8 @@ export default function Nav({ onLogout }) {
   function toggleSidebar() {
     const panel = sidebarPanelRef.current;
     const content = sidebarContentRef.current;
-    if (!panel || !content) return;
+    const glass = sidebarGlassRef.current;
+    if (!panel || !content || !glass) return;
 
     const expanding = collapsed;
 
@@ -161,6 +163,7 @@ export default function Nav({ onLogout }) {
 
     const pKf = [];
     const cKf = [];
+    const gKf = [];
 
     for (let i = 0; i <= STEPS; i++) {
       const p = i / STEPS;
@@ -169,6 +172,13 @@ export default function Nav({ onLogout }) {
       s = Math.max(MIN_SCALE, Math.min(1, s));
       pKf.push({ transform: `scaleX(${s})`, offset: p });
       cKf.push({ transform: `scaleX(${1 / s})`, offset: p });
+
+      // Glass lightens as panel expands (mirrors mobile menu: 10→22 RGB, 0.72→0.78 alpha)
+      const t2 = (s - MIN_SCALE) / (1 - MIN_SCALE);
+      gKf.push({
+        background: `rgba(${Math.round(10 + 12 * t2)},${Math.round(10 + 12 * t2)},${Math.round(11 + 14 * t2)},${(0.72 + 0.06 * t2).toFixed(2)})`,
+        offset: p,
+      });
     }
 
     const dur = expanding ? OPEN_DURATION : CLOSE_DURATION;
@@ -176,6 +186,7 @@ export default function Nav({ onLogout }) {
     sbAnimsRef.current = [
       panel.animate(pKf, { duration: dur, easing: 'linear', fill: 'both' }),
       content.animate(cKf, { duration: dur, easing: 'linear', fill: 'both' }),
+      glass.animate(gKf, { duration: dur, easing: 'linear', fill: 'both' }),
     ];
 
     sbAnimsRef.current[0].onfinish = () => {
@@ -477,7 +488,7 @@ export default function Nav({ onLogout }) {
           ref={sidebarPanelRef}
           style={{ transform: collapsed ? `scaleX(${MIN_SCALE})` : 'scaleX(1)' }}
         >
-          <div className="nav-sidebar-panel-glass"></div>
+          <div className="nav-sidebar-panel-glass" ref={sidebarGlassRef}></div>
           <div
             className="nav-sidebar-panel-content"
             ref={sidebarContentRef}
