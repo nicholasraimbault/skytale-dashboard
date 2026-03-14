@@ -252,10 +252,7 @@ input {
 /* Layout */
 
 .page {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2.5rem 2rem 3rem;
-  margin-left: 48px;
+  padding: 2.5rem 2.5rem 3rem calc(48px + 2.5rem);
 }
 
 .page-title {
@@ -290,7 +287,6 @@ input {
   }
 
   .page {
-    margin-left: 0 !important;
     padding: 5.5rem 1rem 2rem;
   }
 }
