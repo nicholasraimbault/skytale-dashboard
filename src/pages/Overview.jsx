@@ -128,6 +128,7 @@ export default function Overview() {
   );
   const [activeTab, setActiveTab] = useState('generic');
   const [codeCopied, setCodeCopied] = useState(false);
+  const [liveMode, setLiveMode] = useState(false);
 
   function loadDashboardData() {
     return Promise.all([
@@ -172,6 +173,14 @@ export default function Overview() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!liveMode) return;
+    const interval = setInterval(() => {
+      loadDashboardData().catch(() => {});
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [liveMode]);
 
   if (loading)
     return (
@@ -326,7 +335,16 @@ export default function Overview() {
 
   return (
     <main className="page" id="main-content">
-      <h1 className="page-title">Overview</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <h1 className="page-title" style={{ marginBottom: 0 }}>Overview</h1>
+        <button
+          className={`btn-ghost live-toggle ${liveMode ? 'live-toggle-active' : ''}`}
+          onClick={() => setLiveMode(v => !v)}
+          aria-pressed={liveMode}
+        >
+          {liveMode ? '● Live' : '○ Live'}
+        </button>
+      </div>
       <p className="page-subtitle">Trust command center for your Skytale deployment.</p>
 
       {/* Trust Health — full width */}
