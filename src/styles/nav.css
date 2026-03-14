@@ -40,8 +40,12 @@ body:not(.sidebar-collapsed) .nav-sidebar-rail {
   font-family: 'Rethink Sans', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text);
   margin-bottom: 0.75rem;
+}
+
+.nav-sidebar-rail-brand span {
+  color: var(--accent);
 }
 
 /* Rail icon links */
