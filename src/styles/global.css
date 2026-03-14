@@ -255,11 +255,6 @@ input {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2.5rem 2rem 3rem;
-  margin-left: 240px;
-  transition: margin-left 0.29s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-body.sidebar-collapsed .page {
   margin-left: 48px;
 }
 
