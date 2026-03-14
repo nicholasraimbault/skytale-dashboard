@@ -795,7 +795,7 @@
 
 /* ========== Responsive ========== */
 
-@media (min-width: 1440px) {
+@media (min-width: 1200px) {
   .key-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
