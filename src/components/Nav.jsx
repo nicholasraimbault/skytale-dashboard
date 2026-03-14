@@ -40,7 +40,7 @@ const MIN_SCALE = 0.01;
 export default function Nav({ onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem('skytale_sidebar_collapsed') === 'true',
+    () => localStorage.getItem('skytale_sidebar_collapsed') !== 'false',
   );
   const navigate = useNavigate();
 
@@ -202,6 +202,11 @@ export default function Nav({ onLogout }) {
   const closeMenu = useCallback(() => {
     if (isOpen) toggle();
   }, [isOpen, toggle]);
+
+  // Collapse sidebar panel on navigation
+  function closeSidebar() {
+    if (!collapsed) toggleSidebar();
+  }
 
   function handleLogout() {
     if (isOpen) toggle();
@@ -535,18 +540,21 @@ export default function Nav({ onLogout }) {
                   to="/"
                   end
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Overview
                 </NavLink>
                 <NavLink
                   to="/security"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Security
                 </NavLink>
                 <NavLink
                   to="/compliance"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Compliance
                 </NavLink>
@@ -557,18 +565,21 @@ export default function Nav({ onLogout }) {
                 <NavLink
                   to="/channels"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Channels
                 </NavLink>
                 <NavLink
                   to="/agents"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Agents
                 </NavLink>
                 <NavLink
                   to="/federation"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Federation
                 </NavLink>
@@ -579,12 +590,14 @@ export default function Nav({ onLogout }) {
                 <NavLink
                   to="/keys"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   API Keys
                 </NavLink>
                 <NavLink
                   to="/playground"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Playground
                 </NavLink>
@@ -595,30 +608,35 @@ export default function Nav({ onLogout }) {
                 <NavLink
                   to="/activity"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Activity
                 </NavLink>
                 <NavLink
                   to="/settings"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Settings
                 </NavLink>
                 <NavLink
                   to="/team"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Team
                 </NavLink>
                 <NavLink
                   to="/pricing"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Pricing
                 </NavLink>
                 <NavLink
                   to="/account"
                   className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
                 >
                   Account
                 </NavLink>
