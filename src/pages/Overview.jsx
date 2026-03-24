@@ -1,9 +1,10 @@
 // Copyright 2026 Skytale. Licensed under the Business Source License 1.1.
 // See LICENSE for details.
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+const UsageChart = lazy(() => import('../components/UsageChart.jsx'));
 import {
   getUsage,
   getKeys,
@@ -32,15 +33,6 @@ function daysBetween(dateStr) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
 }
 
-function CustomTooltip({ active, payload, label }) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="card" style={{ padding: '0.75rem 1rem', fontSize: '0.8125rem' }}>
-      <div style={{ color: 'var(--text-muted)', marginBottom: '0.25rem' }}>{label}</div>
-      <div style={{ fontWeight: 600 }}>{formatNumber(payload[0].value)} messages</div>
-    </div>
-  );
-}
 
 const frameworkSnippets = (apiKey) => ({
   generic: `pip install skytale-sdk
@@ -474,38 +466,9 @@ export default function Overview() {
           {chart.length > 0 && (
             <div className="card usage-chart-card">
               <h2 className="usage-chart-title">Daily messages (last 30 days)</h2>
-              <ResponsiveContainer width="100%" height={280}>
-                <AreaChart data={chart} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id="msgGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--accent)" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="var(--accent)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <XAxis
-                    dataKey="date"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: '#6B6B73', fontSize: 11 }}
-                    dy={8}
-                  />
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: '#6B6B73', fontSize: 11 }}
-                    tickFormatter={formatNumber}
-                    dx={-4}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area
-                    type="monotone"
-                    dataKey="messages"
-                    stroke="var(--accent)"
-                    strokeWidth={2}
-                    fill="url(#msgGradient)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              <Suspense fallback={<div style={{ height: 280 }} />}>
+                <UsageChart data={chart} />
+              </Suspense>
             </div>
           )}
 
