@@ -22,9 +22,12 @@ async function request(path, options = {}) {
     let message;
     try {
       const json = JSON.parse(body);
-      message = json.error || json.message || body;
+      message = json.error || json.message || `Request failed (${res.status})`;
     } catch {
-      message = body || `Request failed (${res.status})`;
+      // Avoid displaying raw HTML error pages
+      message = body && !body.startsWith('<')
+        ? body
+        : `Request failed (${res.status})`;
     }
     throw new Error(message);
   }
