@@ -25,9 +25,7 @@ async function request(path, options = {}) {
       message = json.error || json.message || `Request failed (${res.status})`;
     } catch {
       // Avoid displaying raw HTML error pages
-      message = body && !body.startsWith('<')
-        ? body
-        : `Request failed (${res.status})`;
+      message = body && !body.startsWith('<') ? body : `Request failed (${res.status})`;
     }
     throw new Error(message);
   }

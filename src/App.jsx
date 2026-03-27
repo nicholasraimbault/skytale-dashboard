@@ -45,18 +45,41 @@ export default function App() {
 
   const handleLogout = useCallback(() => setAuthed(false), []);
 
-  if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-      Loading...
-    </div>
-  );
+  if (loading)
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          color: 'var(--text-muted)',
+          fontSize: '0.875rem',
+        }}
+      >
+        Loading...
+      </div>
+    );
 
-  if (authError && !authed) return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '1rem', color: 'var(--text-muted)' }}>
-      <p>Unable to connect to Skytale. Please check your connection.</p>
-      <button className="btn btn-primary" onClick={() => window.location.reload()}>Retry</button>
-    </div>
-  );
+  if (authError && !authed)
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          gap: '1rem',
+          color: 'var(--text-muted)',
+        }}
+      >
+        <p>Unable to connect to Skytale. Please check your connection.</p>
+        <button className="btn btn-primary" onClick={() => window.location.reload()}>
+          Retry
+        </button>
+      </div>
+    );
 
   return (
     <BrowserRouter>

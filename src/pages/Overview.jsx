@@ -33,7 +33,6 @@ function daysBetween(dateStr) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
 }
 
-
 const frameworkSnippets = (apiKey) => ({
   generic: `pip install skytale-sdk
 
@@ -328,10 +327,12 @@ export default function Overview() {
   return (
     <main className="page" id="main-content">
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <h1 className="page-title" style={{ marginBottom: 0 }}>Overview</h1>
+        <h1 className="page-title" style={{ marginBottom: 0 }}>
+          Overview
+        </h1>
         <button
           className={`btn-ghost live-toggle ${liveMode ? 'live-toggle-active' : ''}`}
-          onClick={() => setLiveMode(v => !v)}
+          onClick={() => setLiveMode((v) => !v)}
           aria-pressed={liveMode}
         >
           {liveMode ? '● Live' : '○ Live'}
