@@ -1020,7 +1020,7 @@
     <div class="status-right" id="status-right-content">
       <a href="#" class="status-link" id="status-auth-link" onclick="event.preventDefault();if(typeof startOAuth==='function')startOAuth()"><span class="sk">enter</span> signup</a>
       <a href="https://docs.skytale.sh/" class="status-link"><span class="sk">d</span> docs</a>
-      <a href="https://blog.skytale.sh/" class="status-link"><span class="sk">b</span> blog</a>
+      <a href="https://docs.skytale.sh/blog/" class="status-link"><span class="sk">b</span> blog</a>
       <a href="https://github.com/nicholasraimbault/skytale" class="status-link"><span class="sk">g</span> github</a>
       <span class="status-link d"><span class="sk">esc</span> unfocus</span>
     </div>
@@ -2590,7 +2590,7 @@
     if (tab) { activate(tab.dataset.panel); return; }
 
     if (e.key === 'd') { window.location.href = 'https://docs.skytale.sh/'; return; }
-    if (e.key === 'b') { window.location.href = 'https://blog.skytale.sh/'; return; }
+    if (e.key === 'b') { window.location.href = 'https://docs.skytale.sh/blog/'; return; }
     if (e.key === 'g') { window.open('https://github.com/nicholasraimbault/skytale'); return; }
     if (e.key === 'Enter' && document.activeElement !== promptInput) {
       if (!isAuthed()) { startOAuth(); }
