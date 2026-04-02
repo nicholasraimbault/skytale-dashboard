@@ -434,6 +434,66 @@
         white-space: pre-wrap;
       }
 
+      /* ── Secondary panel (hidden by default) ── */
+      .output-secondary {
+        display: none;
+      }
+
+      /* ── Wide desktop: two-column output ── */
+      @media (min-width: 1200px) {
+        .output {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: auto 1fr;
+          min-height: 0;
+        }
+
+        .output .panel-title:first-child {
+          grid-column: 1;
+        }
+
+        .output-scroll {
+          grid-column: 1;
+          grid-row: 2;
+          min-height: 0;
+          overflow-y: auto;
+        }
+
+        .output-secondary {
+          display: flex;
+          flex-direction: column;
+          grid-column: 2;
+          grid-row: 1 / -1;
+          border-left: 1px solid #2a2a2f;
+          min-height: 0;
+        }
+
+        .output-secondary .panel-title {
+          flex-shrink: 0;
+        }
+
+        .output-secondary-scroll {
+          flex: 1;
+          overflow-y: auto;
+          overflow-x: auto;
+          padding: 0.75rem 0.75rem 0.75rem 0.25rem;
+          min-height: 0;
+        }
+
+        #secondary-content {
+          margin: 0;
+          font-size: 0.8125rem;
+          line-height: 1.65;
+          color: #b0b0b8;
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+      }
+
+      .output-secondary-scroll::-webkit-scrollbar { width: 6px; }
+      .output-secondary-scroll::-webkit-scrollbar-track { background: transparent; }
+      .output-secondary-scroll::-webkit-scrollbar-thumb { background: #2a2a2f; }
+
       /* ── Responsive: Large desktop ── */
       @media (min-width: 1440px) {
         .main {
@@ -934,6 +994,12 @@
         </div>
 
       </div>
+      <div class="output-secondary" id="output-secondary">
+        <div class="panel-title" id="secondary-title">output</div>
+        <div class="output-secondary-scroll" id="secondary-scroll">
+          <pre id="secondary-content"></pre>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1031,6 +1097,7 @@
     updateStatusBar();
     activate('connect');
     flashStatus('\u2713 authenticated as @' + getLogin());
+    appendToLog('\u2713 authenticated as @' + getLogin());
     updatePromptHint();
   }
 
@@ -1222,6 +1289,7 @@
   }
 
   async function showChannelDetail(name) {
+    appendToLog('viewed channel: ' + name);
     const el = document.getElementById('channels-content');
     try {
       const data = await api('GET', '/v1/channels');
@@ -1362,7 +1430,7 @@
       const data = await api('POST', '/v1/billing/checkout');
       if (data.checkout_url) window.open(data.checkout_url, '_blank');
     } catch (e) {
-      showSandboxResult('  Error: ' + e.message);
+      logOutput('  Error: ' + e.message);
     }
   }
 
@@ -1371,7 +1439,7 @@
       const data = await api('POST', '/v1/billing/portal');
       if (data.portal_url) window.open(data.portal_url, '_blank');
     } catch (e) {
-      showSandboxResult('  Error: ' + e.message);
+      logOutput('  Error: ' + e.message);
     }
   }
 
@@ -1713,6 +1781,7 @@
         if (channels.length > 0) {
           flashStatus('\u25CF live \u2014 subscribed to ' + channels.length + ' channel' + (channels.length > 1 ? 's' : ''));
         }
+        appendToLog('\u25CF connected to relay, subscribed to ' + channels.length + ' channels');
       }).catch(function() {});
     };
 
@@ -1730,6 +1799,7 @@
           if (currentPanel !== 'activity') {
             flashStatus('\u25CF ' + msg.channel + ' \u2014 new message');
           }
+          appendToLog('\u25CF message on ' + msg.channel);
         }
       } catch (e) {}
     };
@@ -1763,6 +1833,41 @@
       install: 'skytale', code: 'skytale', security: 'skytale'
     };
     prefix.textContent = (prefixes[panelId] || 'skytale') + '> ';
+  }
+
+  // ── Secondary panel helpers ──
+  function hasSecondaryPanel() {
+    var secondary = document.getElementById('output-secondary');
+    return secondary && getComputedStyle(secondary).display !== 'none';
+  }
+
+  // Output log — appends to secondary panel on wide screens
+  function appendToLog(text) {
+    var el = document.getElementById('secondary-content');
+    if (!el) return;
+    var secondary = document.getElementById('output-secondary');
+    if (!secondary || getComputedStyle(secondary).display === 'none') return;
+
+    var timestamp = new Date().toLocaleTimeString('en-US', {hour12: false, hour:'2-digit', minute:'2-digit'});
+    var line = timestamp + '  ' + text + '\n';
+    el.textContent += line;
+
+    // Auto-scroll to bottom
+    var scroll = document.getElementById('secondary-scroll');
+    if (scroll) scroll.scrollTop = scroll.scrollHeight;
+  }
+
+  function logOutput(text) {
+    if (hasSecondaryPanel()) {
+      appendToLog(text);
+    } else {
+      showSandboxResult(text);
+    }
+  }
+
+  function logStatus(text) {
+    appendToLog(text);
+    flashStatus(text);
   }
 
   // ── Doctor command ──
@@ -1826,7 +1931,7 @@
 
     out += '\n  Run skytale doctor in your terminal for full diagnostics.';
 
-    showSandboxResult(out);
+    logOutput(out);
   }
 
   async function runCrypto(input) {
@@ -1835,9 +1940,9 @@
     const encMatch = raw.match(/^encrypt\s+["'](.+?)["']$/i) || raw.match(/^encrypt\s+(.+)$/i);
     if (encMatch) {
       const msg = encMatch[1];
-      showSandboxResult('  Loading MLS engine...');
+      logOutput('Loading MLS engine...');
       const mls = await loadMls();
-      if (!mls) { showSandboxResult('  Error: MLS WASM module failed to load.'); return true; }
+      if (!mls) { logOutput('Error: MLS WASM module failed to load.'); return true; }
       if (!mlsGroupCreated) {
         await mls.create_group('skytale-demo-' + Math.random().toString(36).slice(2, 10));
         mlsGroupCreated = true;
@@ -1846,7 +1951,7 @@
       lastCiphertextHex = hex;
       const bytes = mls.hex_byte_count(hex);
 
-      showSandboxResult(
+      logOutput(
         '  $ skytale encrypt "' + msg + '"\n\n' +
         '  protocol:   MLS (RFC 9420)\n' +
         '  engine:     mls-rs 0.54 compiled to WebAssembly\n' +
@@ -1861,13 +1966,13 @@
 
     if (raw === 'decrypt') {
       if (!lastCiphertextHex) {
-        showSandboxResult('  No encrypted message. Try: encrypt "hello world"');
+        logOutput('  No encrypted message. Try: encrypt "hello world"');
         return true;
       }
       const mls = await loadMls();
-      if (!mls) { showSandboxResult('  Error: MLS WASM module failed to load.'); return true; }
+      if (!mls) { logOutput('  Error: MLS WASM module failed to load.'); return true; }
       const text = await mls.decrypt(lastCiphertextHex);
-      showSandboxResult(
+      logOutput(
         '  $ skytale decrypt\n\n' +
         '  protocol:   MLS (RFC 9420)\n' +
         '  ciphertext: ' + lastCiphertextHex.slice(0, 48) + '...\n' +
@@ -1884,7 +1989,7 @@
       const mc = new Uint8Array([0xed, 0x01, ...new Uint8Array(pub)]);
       const did = 'did:key:z' + btoa(String.fromCharCode(...mc)).replace(/[+/=]/g, '').slice(0, 46);
 
-      showSandboxResult(
+      logOutput(
         '  $ skytale keygen\n\n' +
         '  algorithm:  Ed25519\n' +
         '  public key: ' + pubHex + '\n' +
@@ -1902,7 +2007,7 @@
       const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
       const hex = toHex(digest);
 
-      showSandboxResult(
+      logOutput(
         '  $ skytale hash "' + data + '"\n\n' +
         '  algorithm:  SHA-256\n' +
         '  input:      "' + data + '"\n' +
@@ -1927,11 +2032,11 @@
     pricing: 'pricing', price: 'pricing', plans: 'pricing',
     sandbox: 'sandbox', try: 'sandbox', crypto: 'sandbox',
     connect: 'connect', setup: 'connect', 'get started': 'connect', start: 'connect',
-    activity: 'activity', log: 'activity', logs: 'activity',
+    activity: 'activity', logs: 'activity',
   };
 
   // ── Autocomplete ──
-  const allCmds = [...Object.keys(aliases), 'encrypt', 'decrypt', 'keygen', 'hash', 'signup', 'login', 'logout', 'create channel', 'create key', 'channels', 'channels create', 'channels view', 'channels invite', 'channel', 'keys', 'keys create', 'keys revoke', 'usage', 'connect', 'activity', 'activity --channel', 'activity --last', 'revoke key', 'whoami', 'account', 'help', '?', 'doctor', 'refresh', 'agents', 'agents list', 'revocations', 'webhooks', 'teams', 'audit', 'export usage', 'export audit', 'export compliance', 'billing', 'billing upgrade', 'billing portal', 'logs', 'logs --follow', 'follow', 'stop', 'unfollow', 'init'];
+  const allCmds = [...Object.keys(aliases), 'encrypt', 'decrypt', 'keygen', 'hash', 'signup', 'login', 'logout', 'create channel', 'create key', 'channels', 'channels create', 'channels view', 'channels invite', 'channel', 'keys', 'keys create', 'keys revoke', 'usage', 'connect', 'activity', 'activity --channel', 'activity --last', 'revoke key', 'whoami', 'account', 'help', '?', 'doctor', 'refresh', 'agents', 'agents list', 'revocations', 'webhooks', 'teams', 'audit', 'export usage', 'export audit', 'export compliance', 'billing', 'billing upgrade', 'billing portal', 'logs', 'logs --follow', 'follow', 'stop', 'unfollow', 'init', 'log', 'output'];
 
   promptInput.addEventListener('input', function() {
     const val = promptInput.value.trim().toLowerCase();
@@ -1999,13 +2104,25 @@
 
         helpText += '\n  esc                return to previous panel';
 
-        showSandboxResult(helpText);
+        logOutput(helpText);
         promptInput.value = '';
         hint.textContent = '';
         return;
       }
 
-      // 0b. Doctor command
+      // 0b. Log/output command (mobile fallback for secondary panel)
+      if (raw === 'log' || raw === 'output') {
+        var logEl = document.getElementById('secondary-content');
+        if (logEl && logEl.textContent.trim()) {
+          showSandboxResult(logEl.textContent);
+        } else {
+          showSandboxResult('  No output yet. Run a command.');
+        }
+        promptInput.value = '';
+        return;
+      }
+
+      // 0c. Doctor command
       if (raw === 'doctor') {
         runDoctor();
         promptInput.value = '';
@@ -2013,7 +2130,7 @@
         return;
       }
 
-      // 0c. Refresh command
+      // 0d. Refresh command
       if (raw === 'refresh') {
         if (currentPanel === 'channels') loadChannels();
         else if (currentPanel === 'keys') loadKeys();
@@ -2024,7 +2141,7 @@
         return;
       }
 
-      // 0d. Context-aware sub-commands
+      // 0e. Context-aware sub-commands
       if (isAuthed() && currentPanel === 'channels') {
         if (raw.startsWith('create ') && !raw.startsWith('create key') && !raw.startsWith('create channel')) raw = 'channels ' + raw;
         if (raw.startsWith('view ')) raw = 'channels ' + raw;
@@ -2035,7 +2152,7 @@
         if (raw.startsWith('revoke ') && !raw.startsWith('revoke key')) raw = 'keys ' + raw;
       }
 
-      // 0e. Live activity streaming commands
+      // 0f. Live activity streaming commands
       if (raw === 'logs --follow' || raw === 'logs -f' || raw === 'follow') {
         activate('activity');
         startLiveActivity();
@@ -2051,18 +2168,18 @@
         return;
       }
 
-      // 0f. Panel navigation commands
+      // 0g. Panel navigation commands
       if (raw === 'channels' || raw === 'channels list') { activate('channels'); promptInput.value = ''; hint.textContent = ''; return; }
       if (raw === 'keys' || raw === 'keys list') { activate('keys'); promptInput.value = ''; hint.textContent = ''; return; }
       if (raw === 'activity' || raw === 'logs') { activate('activity'); promptInput.value = ''; hint.textContent = ''; return; }
       if (raw === 'init') { activate('connect'); promptInput.value = ''; hint.textContent = ''; return; }
 
-      // 0g. Channels sub-commands
+      // 0h. Channels sub-commands
       if (raw.startsWith('channels create ')) {
         var chCreateName = raw.slice(16).trim();
         if (isAuthed()) {
           api('POST', '/v1/channels', {name: chCreateName}).then(function() {
-            flashStatus('\u2713 channel ' + chCreateName + ' created');
+            logStatus('\u2713 channel ' + chCreateName + ' created');
             activate('channels');
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         } else { flashStatus('authenticate first \u2014 type: signup'); }
@@ -2080,7 +2197,7 @@
         var chInvName = raw.slice(16).trim();
         if (isAuthed()) {
           api('POST', '/v1/channels/invites', {channel: chInvName}).then(function(data) {
-            flashStatus('\u2713 invite: ' + (data.token || 'created'));
+            logStatus('\u2713 invite: ' + (data.token || 'created'));
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
         promptInput.value = ''; hint.textContent = ''; return;
@@ -2090,7 +2207,7 @@
         var keyCreateName = raw.slice(12).trim();
         if (isAuthed()) {
           api('POST', '/v1/keys', {name: keyCreateName}).then(function(data) {
-            flashStatus('\u2713 key created: ' + (data.key || ''));
+            logStatus('\u2713 key created: ' + (data.key || ''));
             activate('keys');
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
@@ -2101,20 +2218,20 @@
         var keyRevokeId = raw.slice(12).trim();
         if (isAuthed()) {
           api('DELETE', '/v1/keys/' + keyRevokeId).then(function() {
-            flashStatus('\u2713 key revoked');
+            logStatus('\u2713 key revoked');
             loadKeys();
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0h. Agents
+      // 0i. Agents
       if (raw === 'agents' || raw === 'agents list') {
         if (isAuthed()) {
           api('GET', '/v1/agents').then(function(data) {
             var agents = data.agents || [];
             if (agents.length === 0) {
-              showSandboxResult('  No agents registered.\n  Agents auto-register when they connect via the SDK.');
+              logOutput('  No agents registered.\n  Agents auto-register when they connect via the SDK.');
             } else {
               var agOut = '  \u2500\u2500 Agents \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
               agOut += '  DID                         NAME           STATUS\n';
@@ -2122,78 +2239,78 @@
               agents.forEach(function(a) {
                 agOut += '  ' + (a.did || '').slice(0, 28).padEnd(30) + (a.display_name || '').padEnd(15) + (a.status || '') + '\n';
               });
-              showSandboxResult(agOut);
+              logOutput(agOut);
             }
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         } else { flashStatus('authenticate first \u2014 type: signup'); }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0i. Webhooks
+      // 0j. Webhooks
       if (raw === 'webhooks' || raw === 'webhooks list') {
         if (isAuthed()) {
           api('GET', '/v1/webhooks').then(function(data) {
             var wh = data.webhooks || data || [];
             if (!Array.isArray(wh) || wh.length === 0) {
-              showSandboxResult('  No webhooks configured.\n\n  webhooks create <url> --events message,join');
+              logOutput('  No webhooks configured.\n\n  webhooks create <url> --events message,join');
             } else {
               var whOut = '  \u2500\u2500 Webhooks \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
               wh.forEach(function(w) {
                 whOut += '  ' + (w.url || '').padEnd(40) + (w.events || []).join(', ') + '\n';
               });
-              showSandboxResult(whOut);
+              logOutput(whOut);
             }
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0j. Revocations
+      // 0k. Revocations
       if (raw === 'revocations' || raw === 'revocations list') {
         if (isAuthed()) {
           api('GET', '/v1/revocations').then(function(data) {
             var revs = data.revocations || data || [];
             if (!Array.isArray(revs) || revs.length === 0) {
-              showSandboxResult('  No revocations issued.');
+              logOutput('  No revocations issued.');
             } else {
               var revOut = '  \u2500\u2500 Revocations \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
               revs.forEach(function(r) {
                 revOut += '  ' + (r.revoked_did || '').slice(0, 30).padEnd(32) + (r.reason || '') + '\n';
               });
-              showSandboxResult(revOut);
+              logOutput(revOut);
             }
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0k. Teams
+      // 0l. Teams
       if (raw === 'teams' || raw === 'teams list') {
         if (isAuthed()) {
           api('GET', '/v1/teams').then(function(data) {
             var teams = data.teams || data || [];
             if (!Array.isArray(teams) || teams.length === 0) {
-              showSandboxResult('  No teams yet.');
+              logOutput('  No teams yet.');
             } else {
               var tmOut = '  \u2500\u2500 Teams \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
               teams.forEach(function(t) {
                 tmOut += '  ' + (t.name || '').padEnd(20) + (t.role || '') + '\n';
               });
-              showSandboxResult(tmOut);
+              logOutput(tmOut);
             }
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0l. Audit
+      // 0m. Audit
       if (raw.startsWith('audit ')) {
         var auditChannel = raw.slice(6).trim();
         if (isAuthed()) {
           api('GET', '/v1/audit/' + encodeURIComponent(auditChannel) + '/entries?limit=20').then(function(data) {
             var entries = data.entries || [];
             if (entries.length === 0) {
-              showSandboxResult('  No audit entries for ' + auditChannel);
+              logOutput('  No audit entries for ' + auditChannel);
             } else {
               var audOut = '  \u2500\u2500 Audit: ' + auditChannel + ' \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
               audOut += '  EPOCH  SEQ  TIMESTAMP                SIZE\n';
@@ -2201,14 +2318,14 @@
               entries.forEach(function(ent) {
                 audOut += '  ' + String(ent.epoch || '').padEnd(7) + String(ent.sequence || '').padEnd(5) + (ent.created_at || '').slice(0, 19).padEnd(21) + (ent.encrypted_blob ? ent.encrypted_blob.length + 'B' : '') + '\n';
               });
-              showSandboxResult(audOut);
+              logOutput(audOut);
             }
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0m. Billing
+      // 0n. Billing
       if (raw === 'billing') {
         if (isAuthed()) {
           api('GET', '/v1/billing').then(function(data) {
@@ -2236,7 +2353,7 @@
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0n. Export / compliance
+      // 0o. Export / compliance
       if (raw === 'export usage') {
         if (isAuthed()) {
           api('GET', '/v1/usage').then(function(data) {
@@ -2284,17 +2401,17 @@
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0o. Account/whoami
+      // 0p. Account/whoami
       if (raw === 'account' || raw === 'whoami') {
         if (isAuthed()) {
           api('GET', '/v1/accounts/me').then(function(data) {
-            flashStatus('@' + (data.github_login || data.email || 'user') + ' \u00b7 ' + (data.plan_tier || 'free'));
+            logStatus('@' + (data.github_login || data.email || 'user') + ' \u00b7 ' + (data.plan_tier || 'free'));
           }).catch(function(e) { flashStatus('\u2717 ' + e.message); });
         } else { flashStatus('not signed in \u2014 type: signup'); }
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0p. CLI-only commands
+      // 0q. CLI-only commands
       if (['completions', 'token', 'open', 'share', 'import'].indexOf(raw.split(' ')[0]) !== -1) {
         flashStatus('available in CLI: skytale ' + raw);
         promptInput.value = ''; hint.textContent = ''; return;
@@ -2323,7 +2440,7 @@
         renderSidebar();
         updateStatusBar();
         activate('about');
-        showSandboxResult('  Logged out.');
+        logOutput('  Logged out.');
         return;
       }
 
@@ -2335,7 +2452,7 @@
         hint.textContent = '';
 
         if (!isAuthed()) {
-          showSandboxResult('  Authentication required.\n  Type: signup    (GitHub \u2014 10 seconds)');
+          logOutput('  Authentication required.\n  Type: signup    (GitHub \u2014 10 seconds)');
           return;
         }
 
@@ -2345,9 +2462,9 @@
           (async function() {
             try {
               const result = await api('POST', '/v1/channels', { name: chMatch[1] });
-              showSandboxResult('  Channel created: ' + (result.name || chMatch[1]) + '\n\n  ID: ' + (result.id || 'n/a'));
+              logOutput('  Channel created: ' + (result.name || chMatch[1]) + '\n\n  ID: ' + (result.id || 'n/a'));
               activate('channels');
-            } catch (err) { showSandboxResult('  Error: ' + err.message); }
+            } catch (err) { logOutput('  Error: ' + err.message); }
           })();
           return;
         }
@@ -2367,9 +2484,9 @@
           (async function() {
             try {
               await api('DELETE', '/v1/keys/' + keyId);
-              showSandboxResult('  Key revoked: ' + keyId);
+              logOutput('  Key revoked: ' + keyId);
               loadKeys();
-            } catch (err) { showSandboxResult('  Error: ' + err.message); }
+            } catch (err) { logOutput('  Error: ' + err.message); }
           })();
           return;
         }
@@ -2399,8 +2516,8 @@
           (async function() {
             try {
               const key = await api('POST', '/v1/keys', { name: keyName });
-              showSandboxResult('  API key created (shown once \u2014 copy it now):\n\n  name:   ' + (key.name || keyName) + '\n  key:    ' + key.full_key + '\n  prefix: ' + key.key_prefix);
-            } catch (err) { showSandboxResult('  Error: ' + err.message); }
+              logOutput('  API key created (shown once \u2014 copy it now):\n\n  name:   ' + (key.name || keyName) + '\n  key:    ' + key.full_key + '\n  prefix: ' + key.key_prefix);
+            } catch (err) { logOutput('  Error: ' + err.message); }
           })();
           return;
         }
@@ -2409,15 +2526,15 @@
         if (raw === 'activity') { activate('activity'); return; }
         if (raw === 'connect') { activate('connect'); return; }
         if (raw === 'upgrade') {
-          showSandboxResult('  Pro plan coming soon.\n\n  Free tier: 1M messages/mo, unlimited channels.');
+          logOutput('  Pro plan coming soon.\n\n  Free tier: 1M messages/mo, unlimited channels.');
           return;
         }
         if (raw === 'whoami') {
           (async function() {
             try {
               const acct = await api('GET', '/v1/accounts/me');
-              showSandboxResult('  account:  @' + (acct.github_login || acct.email || 'user') + '\n  email:    ' + (acct.email || 'n/a') + '\n  plan:     ' + (acct.plan || 'free') + '\n  created:  ' + (acct.created_at?.slice(0, 10) || 'n/a'));
-            } catch (err) { showSandboxResult('  Error: ' + err.message); }
+              logOutput('  account:  @' + (acct.github_login || acct.email || 'user') + '\n  email:    ' + (acct.email || 'n/a') + '\n  plan:     ' + (acct.plan || 'free') + '\n  created:  ' + (acct.created_at?.slice(0, 10) || 'n/a'));
+            } catch (err) { logOutput('  Error: ' + err.message); }
           })();
           return;
         }
@@ -2607,6 +2724,7 @@
     document.getElementById('prompt-bar').classList.add('boot-ready');
     setTimeout(function() { promptInput.focus(); }, 100);
     updatePromptHint();
+    appendToLog('skytale v0.5.2 ready');
   }
 
   async function showWelcomeBack() {
@@ -2614,7 +2732,7 @@
       const usage = await api('GET', '/v1/usage');
       const msgs = usage.messages_this_month || 0;
       const chans = usage.channel_count || 0;
-      showSandboxResult('  Welcome back, @' + getLogin() + '\n  ' + chans + ' channels \u00b7 ' + msgs.toLocaleString() + ' messages this month\n\n  Type help for commands.');
+      logOutput('  Welcome back, @' + getLogin() + '\n  ' + chans + ' channels \u00b7 ' + msgs.toLocaleString() + ' messages this month\n\n  Type help for commands.');
       activate(userHasChannels ? 'activity' : 'connect');
     } catch {
       activate(userHasChannels ? 'activity' : 'connect');
@@ -2663,6 +2781,7 @@
     const chars = '\u2581\u2582\u2583\u2584\u2585\u2586\u2587';
     const history = [];
     const MAX = 8;
+    let firstHealthLogged = false;
 
     function renderSpark() {
       const valid = history.filter(function(ms) { return ms > 0; });
@@ -2695,6 +2814,10 @@
         renderSpark();
         dot.style.color = '#7dd3a0';
         if (!statusFlashing) statusText.textContent = 'relay online';
+        if (!firstHealthLogged) {
+          firstHealthLogged = true;
+          appendToLog('relay online ' + ms + 'ms');
+        }
       } catch {
         history.push(-1);
         if (history.length > MAX) history.shift();
@@ -2772,9 +2895,9 @@
         (async function() {
           try {
             await api('DELETE', '/v1/keys/' + keyId);
-            showSandboxResult('  Key revoked: ' + keyId);
+            logOutput('  Key revoked: ' + keyId);
             loadKeys();
-          } catch (err) { showSandboxResult('  Error: ' + err.message); }
+          } catch (err) { logOutput('  Error: ' + err.message); }
         })();
         return;
       }
