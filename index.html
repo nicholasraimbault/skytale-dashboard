@@ -2078,7 +2078,7 @@
   };
 
   // ── Autocomplete ──
-  const allCmds = [...Object.keys(aliases), 'encrypt', 'decrypt', 'keygen', 'hash', 'signup', 'login', 'logout', 'create channel', 'create key', 'channels', 'channels create', 'channels view', 'channels invite', 'channel', 'keys', 'keys create', 'keys revoke', 'usage', 'connect', 'activity', 'activity --channel', 'activity --last', 'revoke key', 'whoami', 'account', 'help', '?', 'doctor', 'refresh', 'agents', 'agents list', 'revocations', 'webhooks', 'teams', 'audit', 'export usage', 'export audit', 'export compliance', 'billing', 'billing upgrade', 'billing portal', 'logs', 'logs --follow', 'follow', 'stop', 'unfollow', 'init', 'log', 'output'];
+  const allCmds = [...Object.keys(aliases), 'encrypt', 'decrypt', 'keygen', 'hash', 'signup', 'login', 'logout', 'create channel', 'create key', 'channels', 'channels create', 'channels view', 'channels invite', 'channel', 'keys', 'keys create', 'keys revoke', 'usage', 'connect', 'activity', 'activity --channel', 'activity --last', 'revoke key', 'whoami', 'account', 'help', '?', 'doctor', 'refresh', 'agents', 'agents list', 'revocations', 'webhooks', 'orgs', 'orgs list', 'audit', 'export usage', 'export audit', 'export compliance', 'billing', 'billing upgrade', 'billing portal', 'logs', 'logs --follow', 'follow', 'stop', 'unfollow', 'init', 'log', 'output'];
 
   promptInput.addEventListener('input', function() {
     const val = promptInput.value.trim().toLowerCase();
@@ -2141,7 +2141,7 @@
           helpText += '  \u2500\u2500 Other \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n';
           helpText += '  webhooks           list webhooks\n';
           helpText += '  revocations        list revocations\n';
-          helpText += '  teams              list teams\n';
+          helpText += '  orgs               list organizations\n';
         }
 
         helpText += '\n  esc                return to previous panel';
@@ -2326,15 +2326,15 @@
         promptInput.value = ''; hint.textContent = ''; return;
       }
 
-      // 0l. Teams
-      if (raw === 'teams' || raw === 'teams list') {
+      // 0l. Orgs (formerly Teams; old `teams` command kept as alias for back-compat)
+      if (raw === 'orgs' || raw === 'orgs list' || raw === 'teams' || raw === 'teams list') {
         if (isAuthed()) {
-          api('GET', '/v1/teams').then(function(data) {
+          api('GET', '/v1/orgs').then(function(data) {
             var teams = data.teams || data || [];
             if (!Array.isArray(teams) || teams.length === 0) {
-              logOutput('  No teams yet.');
+              logOutput('  No organizations yet.');
             } else {
-              var tmOut = '  \u2500\u2500 Teams \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
+              var tmOut = '  \u2500\u2500 Organizations \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n';
               teams.forEach(function(t) {
                 tmOut += '  ' + (t.name || '').padEnd(20) + (t.role || '') + '\n';
               });
