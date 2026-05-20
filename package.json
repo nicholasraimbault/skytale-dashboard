@@ -10,7 +10,7 @@
   },
   "homepage": "https://skytale.sh",
   "author": "Skytale Inc.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "BUSL-1.1",
   "engines": {
     "node": ">=20"
   },
